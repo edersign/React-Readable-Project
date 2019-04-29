@@ -1,6 +1,6 @@
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
-This project is progress!
+This project in progress!
 
 ## Available Scripts
 
