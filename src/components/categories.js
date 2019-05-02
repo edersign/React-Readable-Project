@@ -4,11 +4,21 @@ import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { fetchCategories } from '../actions/category';
+import { fetchPostsByCategories, fetchPosts } from '../actions/post';
 
 class Categories extends React.PureComponent {
   componentDidMount() {
-    this.props.fetchCategories();
+    this.props.dispatch(fetchCategories());
   }
+
+  getPostsByCategory = category => {
+    this.props.dispatch(fetchPostsByCategories(category));
+  };
+
+  getAllPosts = category => {
+    this.props.dispatch(fetchPosts());
+  };
+
   renderCategories = () => {
     const { categories } = this.props;
 
@@ -22,11 +32,15 @@ class Categories extends React.PureComponent {
 
     return (
       <Tabs>
+        <TabslistItenLink key={0} to={'/'}>
+          All posts
+        </TabslistItenLink>
         {Object.keys(categories).map(key => {
           return (
             <TabslistItenLink
               key={categories[key].name}
-              to={`category/${categories[key].name}/`}
+              to={`/${categories[key].name}/`}
+              onClick={() => this.getPostsByCategory(categories[key].name)}
             >
               #{categories[key].name}
             </TabslistItenLink>
@@ -47,9 +61,9 @@ Categories.propTypes = {
 const mapStateToProps = ({ categories }) => ({
   categories,
 });
+
 export default connect(
   mapStateToProps,
-  { fetchCategories },
 )(Categories);
 
 const Tabs = styled.div`

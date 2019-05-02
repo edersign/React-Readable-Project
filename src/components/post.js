@@ -15,18 +15,15 @@ import { ReactComponent as Edit } from '../images/edit.svg';
 import { ReactComponent as Delete } from '../images/delete.svg';
 
 class Posts extends React.PureComponent {
-
-  onVoteUp = () => {
-    console.log(this.props.post.id, 'onVoteUp');
-    // this.props.upVoteToPost(this.props.post.id);
+  onVoteUp = postId => {
+    this.props.fetchVotePost(postId, 'upVote');
   };
 
-  onVoteDown = () => {
-    console.log(this.props.post.id, 'onVoteDown');
-    // this.props.downVoteToPost(this.props.post.id);
+  onVoteDown = postId => {
+    this.props.fetchVotePost(postId, 'downVote');
   };
-  deletePost = (postId) => {
-    // console.log(postId)
+
+  deletePost = postId => {
     this.props.fetchDeletePost(postId);
   };
 
@@ -39,7 +36,7 @@ class Posts extends React.PureComponent {
             <PostTitle>{post.title}</PostTitle>
             <PostBody>{post.body}</PostBody>
             <CategoriesWrap>
-              <CategoriesLink to={`category/${post.category}/`}>
+              <CategoriesLink to={`/${post.category}/`}>
                 #{post.category}
               </CategoriesLink>
             </CategoriesWrap>
@@ -48,8 +45,7 @@ class Posts extends React.PureComponent {
                 <IconCalendar /> {formatDate(post.timestamp)}
               </Timestamp>
               <Author>
-                <IconUser /> By:{' '}
-                @{post.author}
+                <IconUser /> By: @{post.author}
               </Author>
               <Comments>
                 <IconMessage /> {post.commentCount}
@@ -69,7 +65,8 @@ class Posts extends React.PureComponent {
             voteScore={post.voteScore}
             postId={post.id}
             onVoteUp={this.onVoteUp}
-            onVoteDown={this.onVoteDown} />
+            onVoteDown={this.onVoteDown}
+          />
         </Article>
       </Wrap>
     );
@@ -80,22 +77,21 @@ Posts.propTypes = {
   post: PropTypes.object.isRequired,
 };
 
-// export default Posts;
-
 const mapDispatchToProps = dispatch => ({
   fetchVotePost: (postId, option) => dispatch(fetchVotePost(postId, option)),
-  fetchDeletePost: (postId) => dispatch(fetchDeletePost(postId)),
+  fetchDeletePost: postId => dispatch(fetchDeletePost(postId)),
 });
 
-export default connect(() => ({}), mapDispatchToProps)(Posts);
-
+export default connect(
+  () => ({}),
+  mapDispatchToProps,
+)(Posts);
 
 const Article = styled.article`
   position: relative;
   margin: 40px auto;
   background-color: #fff;
   display: flex;
-  cursor: pointer;
   flex: 1 1 auto;
   backface-visibility: hidden;
   transform: translate3d(0, 0, 0);

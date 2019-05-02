@@ -22,45 +22,39 @@ export class Post extends React.PureComponent {
 
     if (post.length === 0) {
       return <p>Loading posts...</p>;
-     }
-     if (!post.length === 0) {
+    }
+    if (!post.length === 0) {
       return <p>Oops, Failed to load list!</p>;
     }
 
-   return <PostDetail post={post} />;
-
+    return <PostDetail post={post} />;
   };
 
   renderComments = () => {
-
     const { comments } = this.props;
-     // console.log(comments);
+    const { postId } = this.props.match.params;
 
-    return <CommentsList comments={comments} />;
-
+    return <CommentsList comments={comments} postId={postId} />;
   };
 
   render() {
-    return <>
-      {this.renderPostDetail()}
-      {this.renderComments()}
-      </>;
+    return (
+      <>
+        {this.renderPostDetail()}
+        {this.renderComments()}
+      </>
+    );
   }
 }
 
-function mapStateToProps({posts, comments}) {
-   // console.log(comments);
-
+function mapStateToProps({ posts, comments }) {
   return {
     posts,
     comments,
   };
 }
 
-
 export default compose(
   withRouter,
-  connect(
-    mapStateToProps
-  ),
+  connect(mapStateToProps),
 )(Post);

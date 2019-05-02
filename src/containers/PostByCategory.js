@@ -4,46 +4,54 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import styled from 'styled-components';
 
-import { fetchPosts } from '../actions/post';
-import { selectedSort } from '../actions/sort';
-import Sort from '../components/sort';
-import PostsList from '../components/postlist';
+import { fetchPostsByCategories } from '../actions/post';
+// import { selectedSort } from '../actions/sort';
+// import Sort from '../components/sort';
+// import PostsList from '../components/postlist';
 import Categories from '../components/categories';
 import Wrap from '../components/wrapper';
 
-export class Home extends React.PureComponent {
+class PostbyCategory extends React.PureComponent {
   componentDidMount() {
-    this.props.dispatch(fetchPosts());
-    this.props.dispatch(selectedSort());
+    // console.log(this.props.match.params.category);
+    this.props.dispatch(fetchPostsByCategories(this.props.match.params.category));
+   // this.props.fetchPostsByCategories(this.props.match.params.category);
   }
 
-  handleChange = sort => {
-    this.props.dispatch(selectedSort(sort));
-  };
-
   renderPostList = () => {
-    const { posts, sort } = this.props;
-    // console.log(posts);
-    if (posts.length === 0) {
+    const { posts } = this.props;
+
+    // const post = { ...posts[0] };
+
+    console.log(posts);
+     /* if (posts.length === 0) {
       return <p>Loading posts...</p>;
     }
     if (!posts.length === 0) {
       return <p>Oops, Failed to load list!</p>;
-    }
+    }*/
 
-    return <PostsList posts={posts} sort={sort} />;
+    // return <PostsList posts={posts[0]} sort={sort} />;
+    /* return (
+      <>
+        {Object.keys(posts).map(key => {
+          return (
+            <div
+              key={posts[key].title}>
+              #{posts[key].title}
+            </div>
+          );
+        })}
+      </>
+    );*/
   };
 
   render() {
-    const { sort } = this.props;
-
     return (
       <Wrap>
+        <h1>Teste</h1>
         <FeedOptions>
           <Categories />
-          <SortWrap>
-            <Sort value={sort} onChange={this.handleChange} />
-          </SortWrap>
         </FeedOptions>
         <Mainfeed>{this.renderPostList()}</Mainfeed>
       </Wrap>
@@ -51,15 +59,14 @@ export class Home extends React.PureComponent {
   }
 }
 
-const mapStateToProps = ({ posts, sorting }) => ({
-    posts: posts,
-    sort: sorting.sort || 'popular',
+const mapStateToProps = ({ posts }) => ({
+  posts,
 });
 
 export default compose(
   withRouter,
   connect(mapStateToProps),
-)(Home);
+)(PostbyCategory);
 
 const FeedOptions = styled.div`
   padding: 10px;

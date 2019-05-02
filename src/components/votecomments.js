@@ -1,86 +1,41 @@
 import React from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
-// import { votePost } from '../actions/post';
 import { ReactComponent as Plus } from '../images/thumbs-up.svg';
 import { ReactComponent as Minus } from '../images/thumbs-down.svg';
 
-class voteComments extends React.Component {
-
-  // handleVoteUpClick = (id, score) => {
-    // console.log(id, score);
-    // event.stopPropagation();
-    // this.props.dispatch(votePost(this.props.id, this.props.score + 1));
-    // this.props.dispatch(votePost(id, score + 1));
-    // e.preventDefault();
-    // console.log(this.dispatch(votePost()));
-    // const { dispatch, votePost, id, score } = this.props;
-    // dispatch(votePost(id, score + 1));
-    // this.props.dispatch(votePost(this.props.postId));
-    // console.log(this.props.id, this.props.score);
-  // };
-  // handleVoteDownClick = (id, score) => {
-    // console.log(id, score);
-    // this.props.dispatch(votePost(id, score - 1));
-    // const { postId } = this.props.id;
-    // const { score } = this.props.score - 1;
-    // console.log(e);
-    // e.stopPropagation();
-    // console.log(this.props.id, this.props.score);
-    // this.props.dispatch(votePost(this.props.postId));
-    // const { dispatch, votePost, id, score } = this.props;
-    // dispatch(votePost(id, score + 1));
-  // };
-  handleClick = ev => {
-    ev.preventDefault();
-    if ('Up') {
-      console.log('sim Up');
-      // props.unfavorite(article.slug);
-    } else {
-      console.log('nøao  Down');
-      // props.favorite(article.slug);
-    }
-  };
-
-  render() {
-    const { commentscore, id } = this.props;
-    // console.log(id);
-    return (
-      <PostScore id={id}>
-        <ScoreCount>{commentscore}</ScoreCount>
-        <PostScoreButtons>
-          <PostScoreOption onClick={() => this.handleClick('Up')}>
-            <IconPlus />
-          </PostScoreOption>
-          <PostScoreOption onClick={() => this.handleClick('Down')}>
-            <IconMinus />
-          </PostScoreOption>
-        </PostScoreButtons>
-      </PostScore>
-    );
+const voteScoreColor = voteScore => {
+  if (voteScore.children > 0) {
+    return { color: '#4CAF50' };
+  } else if (voteScore.children < 0) {
+    return { color: '#f44336' };
+  } else {
+    return { color: '#888' };
   }
-}
-
-voteComments.propTypes = {
-  // CommentsScore: PropTypes.number.isRequired,
-   id: PropTypes.string.isRequired,
 };
 
-const mapDispatchToProps = dispatch => ({
-  //favorite: slug => dispatch({
-    // type: ARTICLE_FAVORITED,
-    // payload: agent.Articles.favorite(slug),
-  //}),
-  //unfavorite: slug => dispatch({
-    // type: ARTICLE_UNFAVORITED,
-    // payload: agent.Articles.unfavorite(slug),
-  // }),
-});
+const voteComments = ({ commentscore, id, onVoteUp, onVoteDown }) => (
+  <PostScore id={id}>
+    <ScoreCount>{commentscore}</ScoreCount>
+    <PostScoreButtons>
+      <PostScoreOption onClick={() => onVoteUp(id, 'upVote')}>
+        <IconPlus />
+      </PostScoreOption>
+      <PostScoreOption onClick={() => onVoteDown(id, 'downVote')}>
+        <IconMinus />
+      </PostScoreOption>
+    </PostScoreButtons>
+  </PostScore>
+);
 
+voteComments.propTypes = {
+  commentscore: PropTypes.number.isRequired,
+  id: PropTypes.string.isRequired,
+  onVoteUp: PropTypes.func,
+  onVoteDown: PropTypes.func,
+};
 
-// export default connect(mapStateToProps)(voteComments);
-export default connect(() => ({}), mapDispatchToProps)(voteComments);
+export default voteComments;
 
 const PostScore = styled.div`
   width: 10%;
@@ -101,6 +56,7 @@ const ScoreCount = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  ${voteScoreColor};
 `;
 const PostScoreButtons = styled.div`
   display: flex;

@@ -13,19 +13,15 @@ import { ReactComponent as User } from '../images/user.svg';
 import { ReactComponent as Edit } from '../images/edit.svg';
 import { ReactComponent as Delete } from '../images/delete.svg';
 
-// const PostsList = ({ posts, sort }) => (
 class PostsList extends React.PureComponent {
-  onVoteUp = (postId) => {
-    // console.log(postId);
+  onVoteUp = postId => {
     this.props.fetchVotePost(postId, 'upVote');
   };
 
-  onVoteDown = (postId) => {
-    // console.log(postId);
+  onVoteDown = postId => {
     this.props.fetchVotePost(postId, 'downVote');
   };
-  deletePost = (postId) => {
-    // console.log(postId)
+  deletePost = postId => {
     this.props.fetchDeletePost(postId);
   };
 
@@ -65,7 +61,7 @@ class PostsList extends React.PureComponent {
                     </PostTitleLink>
                   </PostTitle>
                   <CategoriesWrap>
-                    <CategoriesLink to={`category/${category}/`}>
+                    <CategoriesLink to={`/${category}/`}>
                       #{category}
                     </CategoriesLink>
                   </CategoriesWrap>
@@ -74,8 +70,7 @@ class PostsList extends React.PureComponent {
                       <IconCalendar /> {formatDate(timestamp)}
                     </Timestamp>
                     <Author>
-                      <IconUser /> By:{' '}
-                      @{author}
+                      <IconUser /> By: @{author}
                     </Author>
                     <Comments>
                       <IconMessage /> {commentCount}
@@ -106,25 +101,25 @@ class PostsList extends React.PureComponent {
   }
 }
 
-PostsList.propTypes = {
-  posts: PropTypes.array.isRequired,
-};
-
+//PostsList.propTypes = {
+//  posts: PropTypes.node.isRequired,
+//};
 
 const mapDispatchToProps = dispatch => ({
   fetchVotePost: (postId, option) => dispatch(fetchVotePost(postId, option)),
-  fetchDeletePost: (postId) => dispatch(fetchDeletePost(postId)),
+  fetchDeletePost: postId => dispatch(fetchDeletePost(postId)),
 });
 
-export default connect(() => ({}), mapDispatchToProps)(PostsList);
-
+export default connect(
+  () => ({}),
+  mapDispatchToProps,
+)(PostsList);
 
 const Article = styled.article`
   position: relative;
   margin-bottom: 40px;
   background-color: #fff;
   display: flex;
-  cursor: pointer;
   flex: 1 1 auto;
   backface-visibility: hidden;
   transform: translate3d(0, 0, 0);
@@ -248,7 +243,7 @@ const PostEditOption = styled(Link)`
   justify-content: center;
   align-items: center;
   flex: 1;
-
+  margin: 0 2px 0 0;
   &:hover {
     background-color: rgba(9, 30, 66, 0.08);
     box-shadow: 0 6px 8px rgba(102, 119, 136, 0.03),

@@ -28,7 +28,4 @@ const Wrap = styled.div`
     @media(min-width:1280px){
         width: 1240px;
     }
-    @media(min-width:1440px){
-        width: 1380px;
-    }
 `;

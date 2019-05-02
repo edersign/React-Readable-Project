@@ -1,41 +1,19 @@
 import React from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
-// import { connect } from 'react-redux';
-// import { fetchVotePost } from '../actions/post';
 import { ReactComponent as Plus } from '../images/thumbs-up.svg';
 import { ReactComponent as Minus } from '../images/thumbs-down.svg';
-/*
-class VoteScore extends React.PureComponent {
-  onVoteUp = (postId, option) => {
-    console.log(postId, 'upVote');
-    // this.props.dispatch(fetchVotePost(postId, 'upVote'));
-    // this.props.fetchVotePost(postId, 'upVote');
-  };
-  onVoteDown = (postId, option) => {
-    console.log(postId, 'downVote');
-    // this.props.dispatch(fetchVotePost(postId, 'downVote'));
-    // this.props.fetchVotePost(postId, 'downVote');
-  };
 
-  render() {
-    const { voteScore, postId } = this.props;
-    // console.log(this.props);
-    return (
-      <PostScore postId={postId}>
-        <ScoreCount>{voteScore}</ScoreCount>
-        <PostScoreButtons>
-          <PostScoreOption onClick={() => this.onVoteUp(postId, 'upVote')}>
-            <IconPlus />
-          </PostScoreOption>
-          <PostScoreOption onClick={() => this.onVoteDown(postId, 'downVote')}>
-            <IconMinus />
-          </PostScoreOption>
-        </PostScoreButtons>
-      </PostScore>
-    );
+const voteScoreColor = (voteScore) => {
+  if (voteScore.children > 0) {
+    return { color: '#4CAF50' };
+  } else if (voteScore.children < 0) {
+    return { color: '#f44336' };
+  } else {
+    return { color: '#888' };
   }
-}*/
+};
+
 const VoteScore = ({ postId, voteScore, onVoteUp, onVoteDown }) => (
   <PostScore postId={postId}>
     <ScoreCount>{voteScore}</ScoreCount>
@@ -76,6 +54,7 @@ const ScoreCount = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  ${voteScoreColor};
 `;
 const PostScoreButtons = styled.div`
   display: flex;

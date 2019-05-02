@@ -1,59 +1,50 @@
 import React from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
-// import { Link } from 'react-router-dom';
-import { formatDate } from '../utils/helpers';
-// import uuid from 'uuid';
-import Wrap from './wrapper';
-import Vote from './vote';
+import { compose } from 'redux';
 import { connect } from 'react-redux';
+import { withRouter } from 'react-router-dom';
+import { formatDate } from '../utils/helpers';
+import Wrap from './wrapper';
+import { fetchEditComment, fetchDeleteComment } from '../actions/comment';
+import { fetchPost } from '../actions/post';
+
 import { RIEInput, RIETextArea } from 'riek';
-import { fetchEditPost } from '../actions/post';
+import VoteComments from './votecomments';
 
 import { ReactComponent as Calendar } from '../images/calendar.svg';
 import { ReactComponent as User } from '../images/user.svg';
 import { ReactComponent as Edit } from '../images/edit.svg';
 import { ReactComponent as Delete } from '../images/delete.svg';
 
-const selectOptions = [
-  { id: 1, text: 'React', value: 'react' },
-  { id: 2, text: 'Redux', value: 'redux' },
-  { id: 3, text: 'Udacity', value: 'udacity' },
-];
-
-class PostsForm extends React.PureComponent {
+class CommentForm extends React.Component {
   constructor(props) {
     super(props);
-
+    // console.log(props);
     this.state = {
-      id: this.props.post.id,
-      category: this.props.post.category,
-      title: this.props.post.title,
-      author: this.props.post.author,
-      body: this.props.post.body,
-      voteScore: this.props.post.voteScore,
-      commentCount: this.props.post.commentCount,
-      timestamp: this.props.post.timestamp,
-      deleted: this.props.post.deleted,
+      id: this.props.comment.id,
+      parentId: this.props.comment.parentId,
+      timestamp: this.props.comment.timestamp,
+      author: this.props.comment.author,
+      body: this.props.comment.body,
+      voteScore: this.props.comment.voteScore,
+      parentDeleted: this.props.comment.parentDeleted,
     };
   }
-  onVoteUp = (postId) => {
-    this.setState({ voteScore: this.props.post.voteScore + 1 });
+
+  onVoteUp = () => {
+    this.setState({ voteScore: this.props.comment.voteScore + 1 });
   };
 
-  onVoteDown = (postId) => {
-    this.setState({ voteScore: this.props.post.voteScore - 1 });
+  onVoteDown = () => {
+    this.setState({ voteScore: this.props.comment.voteScore - 1 });
   };
+
   deletePost = () => {
-    this.setState({ deleted: true });
-  };
+    this.props.fetchDeleteComment(this.state.id);
+    this.props.fetchPost(this.state.parentId);
 
-  onCategoryChange = (e, result) => {
-    this.setState({ category: e.target.value });
-  };
-
-  onTitleChange = e => {
-    this.setState({ title: e.text });
+    this.props.history.push('/');
   };
 
   onAuthorChange = e => {
@@ -62,57 +53,33 @@ class PostsForm extends React.PureComponent {
 
   onBodyChange = e => {
     this.setState({ body: e.textarea });
-
   };
 
   handleSubmit = e => {
     e.preventDefault();
-    const post = {
+    const comment = {
       id: this.state.id,
       timestamp: Date.now(),
-      title: this.state.title,
       body: this.state.body,
       author: this.state.author,
-      category: this.state.category,
       voteScore: this.state.voteScore,
-      deleted: this.state.deleted,
-      commentCount: this.state.commentCount,
+      parentDeleted: this.state.parentDeleted,
     };
-    this.props.fetchEditPost(post.id, post);
+    this.props.fetchEditComment(this.state.id, comment);
   };
 
   render() {
     return (
       <Wrap>
-        <Article key={this.state.id}>
-          <EditLabel> Click the text to edit and save to save the entire edit.</EditLabel>
+        <Article key={this.state.id} parentId={this.state.parentId}>
           <PostSummary>
             <PostTitle>
-              <InputTitle
-                value={this.state.title}
-                change={this.onTitleChange}
-                propName="text"
-              />
-            </PostTitle>
-            <PostBody>
               <TareaBody
                 value={this.state.body}
                 change={this.onBodyChange}
                 propName="textarea"
               />
-            </PostBody>
-            <CategoriesWrap>
-              <Select
-                onChange={this.onCategoryChange}
-                value={this.state.category}
-              >
-                {selectOptions.map((option, index) => (
-                  <option value={option.value} key={index}>
-                    {option.text}
-                  </option>
-                ))}
-              </Select>
-            </CategoriesWrap>
+            </PostTitle>
             <PostMeta>
               <Timestamp title={formatDate(this.state.timestamp)}>
                 <IconCalendar /> {formatDate(this.state.timestamp)}
@@ -128,17 +95,18 @@ class PostsForm extends React.PureComponent {
               <PostEdit>
                 <PostEditOption onClick={this.handleSubmit}>
                   <IconEdit />
-                  Save Edit
+                  Edit
                 </PostEditOption>
-                <PostEditOptionDelete onClick={this.deletePost} >
-                  <IconDelete /> Delete
+                <PostEditOptionDelete onClick={this.deletePost}>
+                  <IconDelete />
+                  Delete
                 </PostEditOptionDelete>
               </PostEdit>
             </PostMeta>
           </PostSummary>
-          <Vote
-            voteScore={this.state.voteScore}
-            postId={this.state.id}
+          <VoteComments
+            commentscore={this.state.voteScore}
+            id={this.state.id}
             onVoteUp={this.onVoteUp}
             onVoteDown={this.onVoteDown}
           />
@@ -148,22 +116,28 @@ class PostsForm extends React.PureComponent {
   }
 }
 
-PostsForm.propTypes = {
-  post: PropTypes.object.isRequired,
+CommentForm.propTypes = {
+  comment: PropTypes.object.isRequired,
 };
 
 const mapDispatchToProps = dispatch => ({
-  fetchEditPost: (postId, post) => dispatch(fetchEditPost(postId, post)),
+  fetchEditComment: (commentId, comment) =>
+    dispatch(fetchEditComment(commentId, comment)),
+  fetchDeleteComment: commentId => dispatch(fetchDeleteComment(commentId)),
+  fetchPost: postId => dispatch(fetchPost(postId)),
 });
 
-export default connect(
-  () => ({}),
-  mapDispatchToProps,
-)(PostsForm);
+export default compose(
+  withRouter,
+  connect(
+    () => ({}),
+    mapDispatchToProps,
+  ),
+)(CommentForm);
 
 const Article = styled.article`
   position: relative;
-  margin:40px auto ;
+  margin-bottom: 40px;
   background-color: #fff;
   display: flex;
   cursor: pointer;
@@ -175,22 +149,6 @@ const Article = styled.article`
   transition: all 0.2s ease-out;
   border-radius: 3px;
   border: 1px solid #e8e8e8;
-  border-radius: 3px;
-    box-shadow: 0 0 0 2px #ffeb3b6b;
-`;
-const EditLabel = styled.p`
-  position: absolute;
-  top: -13px;
-  left: -2px;
-  padding: 5px 10px;
-  border-bottom-left-radius: 3px;
-  background-color: #ffeb3b6b;
-  color: #866604;
-  font-size: 12px;
-  line-height: 1;
-  font-weight: 400;
-  letter-spacing: 1px;
-  text-transform: none;
 `;
 
 const PostSummary = styled.div`
@@ -201,6 +159,11 @@ const PostSummary = styled.div`
   flex-direction: column;
   justify-content: flex-start;
   margin-right: auto;
+`;
+
+const PostTitle = styled.h3`
+  font: 400 24px/28px Helvetica, Arial, sans-serif;
+  margin: 20px;
 `;
 
 const PostMeta = styled.div`
@@ -224,6 +187,7 @@ const Timestamp = styled.div`
   text-align: center;
 `;
 const Author = styled(Timestamp)``;
+
 const IconCalendar = styled(Calendar)`
   display: block;
   width: 24px;
@@ -231,6 +195,7 @@ const IconCalendar = styled(Calendar)`
   margin-right: 10px;
   stroke: #999;
 `;
+
 const IconUser = styled(User)`
   display: block;
   width: 24px;
@@ -238,23 +203,11 @@ const IconUser = styled(User)`
   margin-right: 10px;
   stroke: #999;
 `;
-const PostTitle = styled.h3`
-  font: 400 48px/68px Helvetica, Arial, sans-serif;
-  margin: 40px;
-  width: 90%;
-`;
-
-const PostBody = styled.p`
-  margin: 0 40px 30px 40px;
-`;
-const CategoriesWrap = styled.div`
-  margin: 0 40px 20px;
-`;
-
 const PostEdit = styled.div`
   display: flex;
 `;
-const PostEditOption = styled.button`
+
+const PostEditOption = styled.a`
   box-sizing: border-box;
   cursor: pointer;
   display: flex;
@@ -268,7 +221,6 @@ const PostEditOption = styled.button`
   justify-content: center;
   align-items: center;
   flex: 1;
-  margin: 0 2px 0 0;
 
   &:hover {
     background-color: rgba(9, 30, 66, 0.08);
@@ -276,6 +228,7 @@ const PostEditOption = styled.button`
       0 1px 2px rgba(102, 119, 136, 0.3);
   }
 `;
+
 const PostEditOptionDelete = styled.div`
   box-sizing: border-box;
   cursor: pointer;
@@ -294,38 +247,25 @@ const PostEditOptionDelete = styled.div`
     background: rgba(245, 150, 126, 1);
   }
 `;
+
 const IconEdit = styled(Edit)`
   display: block;
   width: 24px;
   height: 24px;
   margin-right: 10px;
 `;
+
 const IconDelete = styled(Delete)`
   display: block;
   width: 24px;
   height: 24px;
   margin-right: 10px;
 `;
-const InputTitle = styled(RIEInput)`
-  border-style: none;
-  transition: all 200ms ease;
-  width: 100%;
-  box-shadow: 0 0 0 2px transparent;
-  
-  vertical-align: middle;
-  &:focus {
-    transition: all 200ms ease;
-    box-shadow: 0 0 0 2px #ccc;
-    border-radius: 2px;
-    outline: none;
-    background-color: yellow;
-  }
-`;
 const InputAuthor = styled(RIEInput)`
   border-style: none;
   transition: all 200ms ease;
   box-shadow: 0 0 0 2px transparent;
-  
+
   vertical-align: middle;
   &:focus {
     transition: all 200ms ease;
@@ -342,11 +282,12 @@ const TareaBody = styled(RIETextArea)`
   width: 100%;
   display: block;
   min-width: 500px;
+  max-width: 740px;
   max-height: 220px;
   min-height: 115px;
   transition: all 200ms ease;
   box-shadow: 0 0 0 2px transparent;
-  
+
   vertical-align: middle;
   &:focus {
     transition: all 200ms ease;
@@ -354,30 +295,5 @@ const TareaBody = styled(RIETextArea)`
     outline: none;
     background-color: yellow;
     box-shadow: 0 0 0 2px #ccc;
-  }
-`;
-
-const Select = styled.select`
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  appearance: none;
-  background-color: rgba(0, 0, 0, 0.07);
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' aria-hidden='true'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E%0A");
-  background-position: 98% center;
-  background-size: 15px;
-  background-repeat: no-repeat;
-  border-radius: 2px;
-  border: none;
-  padding: 8px 12px;
-  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.15);
-  transition: background-color 100ms ease, box-shadow 100ms ease;
-  cursor: pointer;
-  height: 45px;
-  font-size: 16px;
-  width: 20rem;
-  &:focus {
-    transition: all 200ms ease;
-    outline: none;
-    background-color: yellow;
   }
 `;
