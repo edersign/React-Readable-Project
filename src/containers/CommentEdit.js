@@ -3,6 +3,7 @@ import { compose } from 'redux';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import CommentForm from '../components/commentForm';
+import Loader from '../components/load';
 
 class CommentEdit extends React.PureComponent {
 
@@ -19,7 +20,7 @@ class CommentEdit extends React.PureComponent {
     });
 
     if (comment.length === 0) {
-      return <p>Loading posts...</p>;
+      return <Loader />;
     }
     if (!comment.length === 0) {
       return <p>Oops, Failed to load list!</p>;

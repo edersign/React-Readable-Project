@@ -2,32 +2,23 @@ import React from 'react';
 import { NavLink } from 'react-router-dom';
 import styled from 'styled-components';
 import { withRouter } from 'react-router-dom';
-import { fetchPosts } from '../actions/post';
 
 import Wrap from './wrapper';
 import { ReactComponent as MainLogo } from '../images/logo.svg';
 
-class Navigation extends React.PureComponent {
+const Navigation = () => (
+  <Header>
+    <Container>
+      <LogoContainer exact activeClassName="active" to="/">
+        <Logo /> Readable
+      </LogoContainer>
+      <BarLink exact activeClassName="active" to="/about-us">
+        About
+      </BarLink>
+    </Container>
+  </Header>
+);
 
-  getAllPosts = category => {
-    this.props.fetchPosts();
-  };
-
-  render() {
-    return (
-      <Header>
-        <Container>
-          <LogoContainer exact activeClassName="active" to="/" onClick={this.getAllPosts}>
-            <Logo /> Readable
-          </LogoContainer>
-          <BarLink exact activeClassName="active" to="/about-us">
-            About
-          </BarLink>
-        </Container>
-      </Header>
-    );
-  }
-}
 export default withRouter(Navigation);
 
 const Header = styled.header`

@@ -101,9 +101,9 @@ class PostsList extends React.PureComponent {
   }
 }
 
-//PostsList.propTypes = {
-//  posts: PropTypes.node.isRequired,
-//};
+PostsList.propTypes = {
+  posts: PropTypes.any.isRequired,
+};
 
 const mapDispatchToProps = dispatch => ({
   fetchVotePost: (postId, option) => dispatch(fetchVotePost(postId, option)),

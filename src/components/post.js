@@ -74,7 +74,7 @@ class Posts extends React.PureComponent {
 }
 
 Posts.propTypes = {
-  post: PropTypes.object.isRequired,
+  post: PropTypes.object,
 };
 
 const mapDispatchToProps = dispatch => ({

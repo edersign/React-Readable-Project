@@ -4,28 +4,38 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import styled from 'styled-components';
 
-import { fetchPosts } from '../actions/post';
+import { fetchPosts, fetchPostsByCategories } from '../actions/post';
 import { selectedSort } from '../actions/sort';
 import Sort from '../components/sort';
 import PostsList from '../components/postlist';
 import Categories from '../components/categories';
 import Wrap from '../components/wrapper';
+import Loader from '../components/load';
+import { fetchCategories } from '../actions/category';
 
 export class Home extends React.PureComponent {
   componentDidMount() {
     this.props.dispatch(fetchPosts());
     this.props.dispatch(selectedSort());
+    this.props.dispatch(fetchCategories());
   }
 
   handleChange = sort => {
     this.props.dispatch(selectedSort(sort));
   };
 
+  onClickCat = (category) => {
+    this.props.dispatch(fetchPostsByCategories(category));
+  };
+
+  onClickHome = (e) => {
+    this.props.dispatch(fetchPosts());
+  }
   renderPostList = () => {
     const { posts, sort } = this.props;
-    // console.log(posts);
+
     if (posts.length === 0) {
-      return <p>Loading posts...</p>;
+      return <Loader />;
     }
     if (!posts.length === 0) {
       return <p>Oops, Failed to load list!</p>;
@@ -35,12 +45,11 @@ export class Home extends React.PureComponent {
   };
 
   render() {
-    const { sort } = this.props;
-
+    const { sort, categories } = this.props;
     return (
       <Wrap>
         <FeedOptions>
-          <Categories />
+          <Categories categories={categories} onClickCat={this.onClickCat} onClickHome={this.onClickHome} />
           <SortWrap>
             <Sort value={sort} onChange={this.handleChange} />
           </SortWrap>
@@ -51,10 +60,13 @@ export class Home extends React.PureComponent {
   }
 }
 
-const mapStateToProps = ({ posts, sorting }) => ({
-    posts: posts,
+const mapStateToProps = ({ posts, sorting, categories }) => {
+  return {
+    posts,
     sort: sorting.sort || 'popular',
-});
+    categories,
+  };
+};
 
 export default compose(
   withRouter,

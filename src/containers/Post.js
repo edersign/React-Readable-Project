@@ -7,6 +7,7 @@ import { fetchPost } from '../actions/post';
 import { fetchComments } from '../actions/comment';
 import PostDetail from '../components/post';
 import CommentsList from '../components/commentslist';
+import Loader from '../components/load';
 
 export class Post extends React.PureComponent {
   componentDidMount() {
@@ -21,7 +22,7 @@ export class Post extends React.PureComponent {
     const post = { ...posts[0] };
 
     if (post.length === 0) {
-      return <p>Loading posts...</p>;
+      return <Loader />;
     }
     if (!post.length === 0) {
       return <p>Oops, Failed to load list!</p>;

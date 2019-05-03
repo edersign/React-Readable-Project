@@ -15,7 +15,7 @@ export default function posts(state = initialPostsState, action) {
     case REQUEST_POSTS:
       return action.posts;
     case GET_POSTS_BY_CATEGORIES:
-      return { ...state, ...action.posts };
+      return action.post;
     case RECEIVE_POSTS:
       return action.posts;
     case RECEIVE_POST:

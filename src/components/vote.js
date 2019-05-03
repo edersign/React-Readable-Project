@@ -67,7 +67,9 @@ const PostScoreOption = styled.div`
   clear: both;
   padding: 10px;
   border-radius: 3px;
+  cursor: pointer;
   &:hover {
+    cursor: pointer;
     background: rgba(9, 30, 66, 0.4);
   }
 `;

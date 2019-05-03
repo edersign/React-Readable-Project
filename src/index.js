@@ -3,7 +3,6 @@ import ReactDOM from 'react-dom';
 import { BrowserRouter } from 'react-router-dom';
 import { Provider } from 'react-redux';
 
-import ErrorBoundary from './containers/error';
 import App from './containers/App';
 import configureStore from './store';
 
@@ -12,15 +11,11 @@ const store = configureStore({ initialState: window.__REDUX_STATE__ }, {});
 // import * as serviceWorker from './serviceWorker';
 
 ReactDOM.render(
-  <ErrorBoundary>
-    {hasError => (
-      <Provider store={store}>
-        <BrowserRouter>
-          <App hasError={hasError} />
-        </BrowserRouter>
-      </Provider>
-    )}
-  </ErrorBoundary>,
+  <Provider store={store}>
+    <BrowserRouter>
+      <App />
+    </BrowserRouter>
+  </Provider>,
   document.getElementById('root'),
 );
 

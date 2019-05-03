@@ -9,15 +9,14 @@ export const DELETE_POST = 'DELETE_POSTS';
 export const VOTE_POST = 'VOTE_POSTS';
 export const GET_POSTS_BY_CATEGORIES = 'GET_POSTS_BY_CATEGORIES';
 
-export const postsByCategories = posts => ({
+export const postsByCategories = post => ({
   type: GET_POSTS_BY_CATEGORIES,
-  posts,
+  post,
 });
 
 export const fetchPostsByCategories = category => dispatch =>
   api
     .getPostsByCategories(category)
-    // .then(posts => console.log(posts))
     .then(posts => dispatch(postsByCategories(posts)));
 
 export const requestAllPosts = posts => ({

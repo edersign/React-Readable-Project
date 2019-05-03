@@ -1,70 +1,32 @@
 import React from 'react';
 import styled from 'styled-components';
-import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import { fetchCategories } from '../actions/category';
-import { fetchPostsByCategories, fetchPosts } from '../actions/post';
+import { withRouter } from 'react-router-dom';
 
-class Categories extends React.PureComponent {
-  componentDidMount() {
-    this.props.dispatch(fetchCategories());
-  }
-
-  getPostsByCategory = category => {
-    this.props.dispatch(fetchPostsByCategories(category));
-  };
-
-  getAllPosts = category => {
-    this.props.dispatch(fetchPosts());
-  };
-
-  renderCategories = () => {
-    const { categories } = this.props;
-
-    if (categories.length === 0) {
-      return <p>Loading categories...</p>;
-    }
-
-    if (!categories.length === 0) {
-      return <p>Oops, Failed to load list of categories!</p>;
-    }
-
-    return (
-      <Tabs>
-        <TabslistItenLink key={0} to={'/'}>
-          All posts
+const Categories = ({ categories, onClickCat, onClickHome }) => (
+  <Tabs>
+    {Object.keys(categories).map(key => {
+      return (
+        <TabslistItenLink
+          key={categories[key].name}
+          to={`/${categories[key].name}/`}
+          onClick={() => onClickCat(categories[key].name)}
+          activeClassName="active"
+        >
+          #{categories[key].name}
         </TabslistItenLink>
-        {Object.keys(categories).map(key => {
-          return (
-            <TabslistItenLink
-              key={categories[key].name}
-              to={`/${categories[key].name}/`}
-              onClick={() => this.getPostsByCategory(categories[key].name)}
-            >
-              #{categories[key].name}
-            </TabslistItenLink>
-          );
-        })}
-      </Tabs>
-    );
-  };
-
-  render() {
-    return <>{this.renderCategories()}</>;
-  }
-}
+      );
+    })}
+  </Tabs>
+);
 
 Categories.propTypes = {
   categories: PropTypes.object.isRequired,
+  onClickCat: PropTypes.func.isRequired,
 };
-const mapStateToProps = ({ categories }) => ({
-  categories,
-});
 
-export default connect(
-  mapStateToProps,
-)(Categories);
+export default withRouter(Categories);
 
 const Tabs = styled.div`
   -webkit-overflow-scrolling: touch;
@@ -74,8 +36,7 @@ const Tabs = styled.div`
   justify-content: space-between;
   white-space: nowrap;
 `;
-
-const TabslistItenLink = styled(Link)`
+const TabslistItenLink = styled(NavLink)`
   align-items: center;
   color: #4a4a4a;
   display: flex;
@@ -92,5 +53,15 @@ const TabslistItenLink = styled(Link)`
     transform: translate3d(0, -5px, 0);
     box-shadow: 0 6px 8px rgba(102, 119, 136, 0.03),
       0 1px 2px rgba(102, 119, 136, 0.3);
+  }
+  &:hover.active {
+    background: rgba(0, 0, 0, 0.15);
+    box-shadow: inset 0 -4px 0 0 #02b3e4;
+    color: #777;
+  }
+  &.active {
+    box-shadow: inset 0 -2px 0 0 #02b3e4;
+    opacity: 1;
+    color: #454545;
   }
 `;

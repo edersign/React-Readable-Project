@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { fetchPosts } from '../actions/post';
 import PostForm from '../components/postsform';
+import Loader from '../components/load';
 
 export class PostEdit extends React.PureComponent {
   componentDidMount() {
@@ -22,7 +23,7 @@ export class PostEdit extends React.PureComponent {
     });
 
     if (post.length === 0) {
-      return <p>Loading posts...</p>;
+      return <Loader />;
     }
     if (!post.length === 0) {
       return <p>Oops, Failed to load list!</p>;
