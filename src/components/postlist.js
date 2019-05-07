@@ -27,80 +27,120 @@ class PostsList extends React.PureComponent {
 
   render() {
     const { posts, sort } = this.props;
+    const myData = [].concat(posts).sort((a, b) => {
+      switch (sort) {
+        case 'unpopular':
+          return a.voteScore - b.voteScore;
+        case 'oldest':
+          return a.timestamp - b.timestamp;
+        case 'newest':
+          return b.timestamp - a.timestamp;
+        default:
+          return b.voteScore - a.voteScore;
+      }
+    });
 
     return (
       <>
-        {posts
-          .sort((a, b) => {
-            switch (sort) {
-              case 'unpopular':
-                return a.voteScore - b.voteScore;
-              case 'oldest':
-                return a.timestamp - b.timestamp;
-              case 'newest':
-                return b.timestamp - a.timestamp;
-              default:
-                return b.voteScore - a.voteScore;
-            }
-          })
-          .map(
-            ({
-              id,
-              category,
-              title,
-              voteScore,
-              author,
-              timestamp,
-              commentCount,
-            }) => (
-              <Article key={id}>
-                <PostSummary>
-                  <PostTitle>
-                    <PostTitleLink to={`/${category}/${id}`}>
-                      {title}
-                    </PostTitleLink>
-                  </PostTitle>
-                  <CategoriesWrap>
-                    <CategoriesLink to={`/${category}/`}>
-                      #{category}
-                    </CategoriesLink>
-                  </CategoriesWrap>
-                  <PostMeta>
-                    <Timestamp title={formatDate(timestamp)}>
-                      <IconCalendar /> {formatDate(timestamp)}
-                    </Timestamp>
-                    <Author>
-                      <IconUser /> By: @{author}
-                    </Author>
-                    <Comments>
-                      <IconMessage /> {commentCount}
-                    </Comments>
-                    <PostEdit>
-                      <PostEditOption to={`/edit/${id}`}>
-                        <IconEdit />
-                        Edit
-                      </PostEditOption>
-                      <PostEditOptionDelete onClick={() => this.deletePost(id)}>
-                        <IconDelete />
-                        Delete
-                      </PostEditOptionDelete>
-                    </PostEdit>
-                  </PostMeta>
-                </PostSummary>
-                <Vote
-                  voteScore={voteScore}
-                  postId={id}
-                  onVoteUp={this.onVoteUp}
-                  onVoteDown={this.onVoteDown}
-                />
-              </Article>
-            ),
-          )}
+        {myData.map((post, index) => (
+            <Article id={post.id} key={index}>
+              <PostSummary>
+                <PostTitle>
+                  <PostTitleLink to={`/${post.category}/${post.id}`}>
+                    {post.title}
+                  </PostTitleLink>
+                </PostTitle>
+                <CategoriesWrap>
+                  <CategoriesLink to={`/${post.category}/`}>
+                    #{post.category}
+                  </CategoriesLink>
+                </CategoriesWrap>
+                <PostMeta>
+                  <Timestamp title={formatDate(post.timestamp)}>
+                    <IconCalendar /> {formatDate(post.timestamp)}
+                  </Timestamp>
+                  <Author>
+                    <IconUser /> By: @{post.author}
+                  </Author>
+                  <Comments>
+                    <IconMessage /> {post.commentCount}
+                  </Comments>
+                  <PostEdit>
+                    <PostEditOption to={`/edit/${post.id}`}>
+                      <IconEdit />
+                      Edit
+                    </PostEditOption>
+                    <PostEditOptionDelete onClick={() => this.deletePost(post.id)}>
+                      <IconDelete />
+                      Delete
+                    </PostEditOptionDelete>
+                  </PostEdit>
+                </PostMeta>
+              </PostSummary>
+              <Vote
+                voteScore={post.voteScore}
+                postId={post.id}
+                onVoteUp={this.onVoteUp}
+                onVoteDown={this.onVoteDown}
+              />
+            </Article>
+          ),
+        )}
       </>
     );
   }
 }
+// eslint-disable-next-line no-lone-blocks
 
+/* 
+id,
+            category,
+            title,
+            voteScore,
+            author,
+            timestamp,
+            commentCount,
+            <Article id={id} key={id}>
+              <PostSummary>
+                <PostTitle>
+                  <PostTitleLink to={`/${category}/${id}`}>
+                    {title}
+                  </PostTitleLink>
+                </PostTitle>
+                <CategoriesWrap>
+                  <CategoriesLink to={`/${category}/`}>
+                    #{category}
+                  </CategoriesLink>
+                </CategoriesWrap>
+                <PostMeta>
+                  <Timestamp title={formatDate(timestamp)}>
+                    <IconCalendar /> {formatDate(timestamp)}
+                  </Timestamp>
+                  <Author>
+                    <IconUser /> By: @{author}
+                  </Author>
+                  <Comments>
+                    <IconMessage /> {commentCount}
+                  </Comments>
+                  <PostEdit>
+                    <PostEditOption to={`/edit/${id}`}>
+                      <IconEdit />
+                      Edit
+                    </PostEditOption>
+                    <PostEditOptionDelete onClick={() => this.deletePost(id)}>
+                      <IconDelete />
+                      Delete
+                    </PostEditOptionDelete>
+                  </PostEdit>
+                </PostMeta>
+              </PostSummary>
+              <Vote
+                voteScore={voteScore}
+                postId={id}
+                onVoteUp={this.onVoteUp}
+                onVoteDown={this.onVoteDown}
+              />
+            </Article>*/
 PostsList.propTypes = {
   posts: PropTypes.any.isRequired,
 };

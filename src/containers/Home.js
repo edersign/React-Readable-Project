@@ -13,26 +13,38 @@ import Wrap from '../components/wrapper';
 import Loader from '../components/load';
 import { fetchCategories } from '../actions/category';
 
-export class Home extends React.PureComponent {
+class Home extends React.PureComponent {
+  state = {
+    sort: 'popular',
+  };
+
   componentDidMount() {
-    this.props.dispatch(fetchPosts());
-    this.props.dispatch(selectedSort());
-    this.props.dispatch(fetchCategories());
+    // this.props.dispatch(fetchPosts());
+    // this.props.dispatch(selectedSort());
+    // this.props.dispatch(fetchCategories());
+    // fetchPosts(posts =>
+    //  this.setState({ posts: posts }));
+    // const { dispatch } = this.props;
+    // dispatch(fetchPosts())
+    // const { fetchPosts, fetchCategories } = this.props;
+    const { dispatch } = this.props;
+    // dispatch(fetchPosts());
+    this.props.fetchPosts();
   }
 
   handleChange = sort => {
     this.props.dispatch(selectedSort(sort));
   };
 
-  onClickCat = (category) => {
+  onClickCat = category => {
     this.props.dispatch(fetchPostsByCategories(category));
   };
 
-  onClickHome = (e) => {
+  onClickHome = e => {
     this.props.dispatch(fetchPosts());
-  }
+  };
   renderPostList = () => {
-    const { posts, sort } = this.props;
+    /* const { posts, sort } = this.props;
 
     if (posts.length === 0) {
       return <Loader />;
@@ -41,37 +53,74 @@ export class Home extends React.PureComponent {
       return <p>Oops, Failed to load list!</p>;
     }
 
-    return <PostsList posts={posts} sort={sort} />;
+    return <PostsList posts={posts} sort={sort} />;*/
   };
 
   render() {
     const { sort, categories } = this.props;
+
     return (
-      <Wrap>
+      {/* <Wrap>
         <FeedOptions>
-          <Categories categories={categories} onClickCat={this.onClickCat} onClickHome={this.onClickHome} />
+          <Categories
+            categories={categories}
+            onClickCat={this.onClickCat}
+            onClickHome={this.onClickHome}
+          />
           <SortWrap>
             <Sort value={sort} onChange={this.handleChange} />
           </SortWrap>
         </FeedOptions>
         <Mainfeed>{this.renderPostList()}</Mainfeed>
-      </Wrap>
+      </Wrap>*/}
     );
   }
 }
 
-const mapStateToProps = ({ posts, sorting, categories }) => {
+/* const mapStateToProps = ({ posts, sorting, categories }) => {
   return {
     posts,
-    sort: sorting.sort || 'popular',
+    sort: sorting.sort,
     categories,
+  };
+};*/
+
+const mapStateToProps = ({ posts, sorting }) => {
+  console.log(posts);
+  return {
+    posts,
+    sort: sorting.sort,
   };
 };
 
+const mapDispatchToProps = (dispatch) => {
+  return {
+    fetchPosts: () => dispatch(fetchPosts()),
+    fetchCategories: () => dispatch(fetchCategories()),
+  };
+};
+
+// export default connect(mapStateToProps, mapDispatchToProps)(Posts)
+/* const mapDispatchToProps = dispatch => ({
+  fetchPosts: () => dispatch(fetchPosts()),
+  selectedSort: () => dispatch(selectedSort()),
+  fetchCategories: () => dispatch(fetchCategories()),
+});
+
+
 export default compose(
   withRouter,
-  connect(mapStateToProps),
-)(Home);
+  connect(mapStateToProps, mapDispatchToProps),
+)(Home);*/
+// function mapStateToProps({posts, categories, filterByCategory, loadingData}) {
+//  return {posts, categories, filterByCategory, loadingData}/
+// }
+export default connect(mapStateToProps, mapDispatchToProps)(Home);
+// export default compose(
+//  withRouter,
+//  connect(mapStateToProps, {fetchPosts, fetchCategories}),
+// )(Home);
+
 
 const FeedOptions = styled.div`
   padding: 10px;
