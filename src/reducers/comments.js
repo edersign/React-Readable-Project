@@ -18,12 +18,10 @@ export default function comments(state = initialCommentsState, action) {
     case RECEIVE_COMMENT:
       return action.comment;
     case VOTE_COMMENT:
-      // return [...state, ...action.comment];
       return state
         .filter(comment => comment.id !== action.comment.id)
         .concat(action.comment);
     case EDIT_COMMENT:
-      // return [...state, ...action.comment];
       return state
         .filter(comment => comment.id !== action.comment.id)
         .concat(action.comment);

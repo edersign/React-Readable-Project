@@ -14,14 +14,13 @@ import Loader from '../components/load';
 export class Post extends React.PureComponent {
   componentDidMount() {
     const { postId } = this.props.match.params;
-
-    this.props.dispatch(fetchPost(postId));
     this.props.dispatch(fetchComments(postId));
+    this.props.dispatch(fetchPost(postId));
   }
 
   renderPostDetail = () => {
-    const { posts, loading } = this.props;
-
+    const { posts, loading, comments } = this.props;
+    const commentCount = comments.length;
     const post = posts.filter(post => post.id === this.props.match.params.postId);
     const selectedpost = { ...posts[0] };
 
@@ -29,7 +28,7 @@ export class Post extends React.PureComponent {
       return <Loader />;
     }
 
-    return <PostDetail post={selectedpost} />;
+    return <PostDetail post={selectedpost} commentCount={commentCount} />;
   };
 
   renderComments = () => {
@@ -51,7 +50,7 @@ export class Post extends React.PureComponent {
         {this.renderComments()}
         </>
       ) : (
-          <p> nao tem port </p>
+          <PostTitle> nao tem port </PostTitle>
         )}
       </>
     );
@@ -70,7 +69,7 @@ function mapDispatchToProps(dispatch) {
   return Object.assign(
     { dispatch },
     bindActionCreators(
-      { fetchPost, fetchComments },
+      { fetchComments, fetchPost },
       dispatch,
     ),
   );

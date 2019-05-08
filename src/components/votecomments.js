@@ -40,7 +40,7 @@ export default voteComments;
 const PostScore = styled.div`
   width: 10%;
   flex: 1;
-  justify-content: flex-end
+  justify-content: flex-end;
   align-items: flex-end;
   justify-content: flex-end;
   margin-left: auto;
@@ -52,7 +52,7 @@ const ScoreCount = styled.div`
   min-height: 55%;
   margin: auto;
   text-align: center;
-  font-size: 4rem;
+  font-size: 2.5rem;
   display: flex;
   justify-content: center;
   align-items: center;

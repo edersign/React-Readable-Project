@@ -15,12 +15,6 @@ export default function posts(state = initialPostsState, action) {
   switch (action.type) {
     case INVALIDATE_POSTS:
       return action.err;
-    case GET_POSTS_BY_CATEGORIES:
-      return action.posts;
-    case RECEIVE_POSTS:
-      return action.posts;
-    case RECEIVE_POST:
-      return [action.post];
     case VOTE_POST:
       return state
         .filter(post => post.id !== action.post.id)
@@ -35,6 +29,12 @@ export default function posts(state = initialPostsState, action) {
         .concat(action.post);
     case DELETE_POST:
       return state.filter(post => post.id !== action.postId);
+    case GET_POSTS_BY_CATEGORIES:
+      return action.posts;
+    case RECEIVE_POSTS:
+      return action.posts;
+    case RECEIVE_POST:
+      return [action.post];
     default:
       return state;
   }

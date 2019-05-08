@@ -12,7 +12,7 @@ import { ReactComponent as User } from '../images/user.svg';
 import { ReactComponent as Edit } from '../images/edit.svg';
 
 class AddCommentForm extends React.Component {
-constructor(props) {
+  constructor(props) {
     super(props);
 
     this.state = {
@@ -40,7 +40,7 @@ constructor(props) {
       parentId: this.props.parentId,
       voteScore: 0,
     };
-    // console.log(newcomment);
+
     this.props.fetchAddComment(newcomment);
     this.props.fetchPost(this.state.parentId);
   };
@@ -77,7 +77,7 @@ constructor(props) {
       </Wrap>
     );
   }
-};
+}
 
 AddCommentForm.propTypes = {
   parentId: PropTypes.string.isRequired,
@@ -85,7 +85,7 @@ AddCommentForm.propTypes = {
 
 const mapDispatchToProps = dispatch => ({
   fetchAddComment: newcomment => dispatch(fetchAddComment(newcomment)),
-  fetchPost: (parentId) => dispatch(fetchPost(parentId)),
+  fetchPost: parentId => dispatch(fetchPost(parentId)),
 });
 
 export default connect(
@@ -112,8 +112,8 @@ const PostSummary = styled.div`
   width: 800px;
   flex-direction: column;
   justify-content: flex-start;
-    margin: auto;
-    background: #f8f9fa;
+  margin: auto;
+  background: #f8f9fa;
 `;
 
 const PostTitle = styled.h3`
@@ -186,15 +186,14 @@ const IconEdit = styled(Edit)`
 const InputAuthor = styled(RIEInput)`
   border-style: none;
   transition: all 200ms ease;
-  box-shadow: 0 0 0 2px #ccc;
-    min-width: 450px;
-    max-height: 70px;
-    height: 30px;
-    vertical-align: middle;
-    text-align: left;
-    padding: 10px;
-    margin: 0 0 0 10px;
-    line-height: 30px;
+  min-width: 450px;
+  max-height: 70px;
+  height: 30px;
+  vertical-align: middle;
+  text-align: left;
+  padding: 10px;
+  margin: 0 0 0 10px;
+  line-height: 30px;
   vertical-align: middle;
   border-radius: 2px;
   &:focus {
@@ -208,18 +207,17 @@ const InputAuthor = styled(RIEInput)`
 const TareaBody = styled(RIETextArea)`
   border-style: none;
   transition: box-shadow 100ms ease;
-      width: 100%;
-    display: block;
-    min-width: 700px;
-    max-width: 740px;
-    max-height: 220px;
-    min-height: 115px;
-    margin: auto;
+  width: 100%;
+  display: block;
+  min-width: 700px;
+  max-width: 740px;
+  max-height: 220px;
+  min-height: 115px;
+  margin: auto;
   transition: all 200ms ease;
-  box-shadow: 0 0 0 2px #ccc;
-    border-radius: 2px;
-    padding: 10px; 
-  vertical-align: middle;
+  border-radius: 2px;
+  padding: 10px;
+
   &:focus {
     transition: all 200ms ease;
     outline: none;

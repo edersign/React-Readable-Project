@@ -22,7 +22,7 @@ const Categories = ({ categories, onClickCat, onClickHome }) => (
 );
 
 Categories.propTypes = {
-  // categories: PropTypes.array.isRequired,
+  categories: PropTypes.array.isRequired,
   onClickCat: PropTypes.func.isRequired,
 };
 

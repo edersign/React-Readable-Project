@@ -51,7 +51,6 @@ export class PostCrate extends React.PureComponent {
 
   onBodyChange = e => {
     this.setState({ body: e.textarea });
-
   };
 
   handleSubmit = e => {
@@ -136,22 +135,26 @@ function mapStateToProps({ posts }) {
 }
 
 function mapDispatchToProps(dispatch) {
-  return Object.assign({ dispatch }, bindActionCreators({ fetchAddPost }, dispatch));
+  return Object.assign(
+    { dispatch },
+    bindActionCreators({ fetchAddPost }, dispatch),
+  );
 }
 
 export default compose(
   withRouter,
-  connect(mapStateToProps, mapDispatchToProps),
+  connect(
+    mapStateToProps,
+    mapDispatchToProps,
+  ),
 )(PostCrate);
-
 
 const Article = styled.article`
   position: relative;
-  margin:40px auto ;
+  margin: 40px auto;
   background-color: #fff;
-  display: flex;
-  cursor: pointer;
-  flex: 1 1 auto;
+  display: flex; 
+  flex: 1 0 auto;
   backface-visibility: hidden;
   transform: translate3d(0, 0, 0);
   filter: none;
@@ -160,7 +163,7 @@ const Article = styled.article`
   border-radius: 3px;
   border: 1px solid #e8e8e8;
   border-radius: 3px;
-    box-shadow: 0 0 0 2px #ffeb3b6b;
+  box-shadow: 0 0 0 2px #ffeb3b6b;
 `;
 const EditLabel = styled.p`
   position: absolute;
@@ -242,8 +245,6 @@ const PostEditOption = styled.button`
   box-sizing: border-box;
   cursor: pointer;
   display: flex;
-  background-color: rgba(9, 30, 66, 0.04);
-  color: rgb(0, 82, 204);
   border-radius: 3px;
   padding: 8px 20px;
   -webkit-text-decoration: none;
@@ -253,11 +254,12 @@ const PostEditOption = styled.button`
   align-items: center;
   flex: 1;
   margin: 0 2px 0 0;
+  background-color: #F1F5F8;
+  color: #183247;
+  border: 2px solid #dadfe3;
 
   &:hover {
     background-color: rgba(9, 30, 66, 0.08);
-    box-shadow: 0 6px 8px rgba(102, 119, 136, 0.03),
-      0 1px 2px rgba(102, 119, 136, 0.3);
   }
 `;
 
@@ -272,7 +274,7 @@ const InputTitle = styled(RIEInput)`
   transition: all 200ms ease;
   width: 100%;
   box-shadow: 0 0 0 2px transparent;
-  
+  cursor: pointer;
   vertical-align: middle;
   &:focus {
     transition: all 200ms ease;
@@ -286,7 +288,7 @@ const InputAuthor = styled(RIEInput)`
   border-style: none;
   transition: all 200ms ease;
   box-shadow: 0 0 0 2px transparent;
-  
+  cursor: pointer;
   vertical-align: middle;
   &:focus {
     transition: all 200ms ease;
@@ -307,8 +309,7 @@ const TareaBody = styled(RIETextArea)`
   min-height: 115px;
   transition: all 200ms ease;
   box-shadow: 0 0 0 2px transparent;
-  
-  vertical-align: middle;
+  cursor: pointer;
   &:focus {
     transition: all 200ms ease;
     border-radius: 2px;

@@ -3,10 +3,10 @@ import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { formatDate } from '../utils/helpers';
-import Wrap from './wrapper';
+import { bindActionCreators } from 'redux';
+
 import { connect } from 'react-redux';
 import { fetchVoteComment, fetchDeleteComment } from '../actions/comment';
-import { fetchPost } from '../actions/post';
 import VoteComments from './votecomments';
 
 import { ReactComponent as Calendar } from '../images/calendar.svg';
@@ -22,15 +22,14 @@ class CommentItem extends React.PureComponent {
   onVoteDown = id => {
     this.props.fetchVoteComment(id, 'downVote');
   };
-  onDeleteComment = (id, parentId) => {
+  onDeleteComment = (id) => {
     this.props.fetchDeleteComment(id);
-    this.props.fetchPost(parentId);
   };
 
   render() {
     const { id, body, timestamp, author, voteScore, parentId } = this.props;
     return (
-      <Wrap>
+      <>
         <Article key={id} parentId={parentId}>
           <PostSummary>
             <PostTitle>{body}</PostTitle>
@@ -39,14 +38,16 @@ class CommentItem extends React.PureComponent {
                 <IconCalendar /> {formatDate(timestamp)}
               </Timestamp>
               <Author>
-                <IconUser /> By:{' '}@{author}
+                <IconUser /> By: @{author}
               </Author>
               <PostEdit>
                 <PostEditOption to={`/editcomment/${id}`}>
                   <IconEdit />
                   Edit
                 </PostEditOption>
-                <PostEditOptionDelete onClick={() => this.onDeleteComment(id, parentId)}>
+                <PostEditOptionDelete
+                  onClick={() => this.onDeleteComment(id)}
+                >
                   <IconDelete />
                   Delete
                 </PostEditOptionDelete>
@@ -54,14 +55,14 @@ class CommentItem extends React.PureComponent {
             </PostMeta>
           </PostSummary>
           <VoteComments
-          commentscore={voteScore}
-          id={id}
-          parentId={parentId}
-          onVoteUp={this.onVoteUp}
-          onVoteDown={this.onVoteDown}
+            commentscore={voteScore}
+            id={id}
+            parentId={parentId}
+            onVoteUp={this.onVoteUp}
+            onVoteDown={this.onVoteDown}
           />
         </Article>
-      </Wrap>
+      </>
     );
   }
 }
@@ -75,11 +76,18 @@ CommentItem.propTypes = {
   parentId: PropTypes.string.isRequired,
 };
 
-const mapDispatchToProps = dispatch => ({
-  fetchVoteComment: (commentId, option) => dispatch(fetchVoteComment(commentId, option)),
-  fetchDeleteComment: commentId => dispatch(fetchDeleteComment(commentId)),
-  fetchPost: (parentId) => dispatch(fetchPost(parentId)),
-});
+function mapDispatchToProps(dispatch) {
+  return Object.assign(
+    { dispatch },
+    bindActionCreators(
+      {
+        fetchDeleteComment,
+        fetchVoteComment,
+      },
+      dispatch,
+    ),
+  );
+}
 
 export default connect(
   () => ({}),
@@ -88,7 +96,7 @@ export default connect(
 
 const Article = styled.article`
   position: relative;
-  margin-bottom: 40px;
+  margin: 5px 0;
   background-color: #fff;
   display: flex;
   cursor: pointer;
@@ -100,6 +108,7 @@ const Article = styled.article`
   transition: all 0.2s ease-out;
   border-radius: 3px;
   border: 1px solid #e8e8e8;
+  width: 100%;
 `;
 
 const PostSummary = styled.div`
@@ -113,19 +122,18 @@ const PostSummary = styled.div`
 `;
 
 const PostTitle = styled.h3`
-  font: 400 24px/28px Helvetica, Arial, sans-serif;
+  font: 400 18px/22px Helvetica, Arial, sans-serif;
   margin: 20px;
 `;
 
 const PostMeta = styled.div`
-  width: calc(100% - 60px);
-  background: #f8f9fa;
+  width: calc(100% - 20px);
   color: #678;
   border-top: solid 1px rgba(102, 119, 136, 0.05);
   display: flex;
   align-items: center;
-  font-size: 14px;
-  padding: 20px 30px;
+  font-size: 13px;
+  padding: 5px 10px;
   justify-content: space-between;
 `;
 const Timestamp = styled.div`
@@ -162,8 +170,6 @@ const PostEditOption = styled(Link)`
   box-sizing: border-box;
   cursor: pointer;
   display: flex;
-  background-color: rgba(9, 30, 66, 0.04);
-  color: rgb(0, 82, 204);
   border-radius: 3px;
   padding: 8px 20px;
   -webkit-text-decoration: none;
@@ -173,10 +179,11 @@ const PostEditOption = styled(Link)`
   align-items: center;
   flex: 1;
 
+  background-color: #f1f5f8;
+  color: #183247;
+  border: 1px solid #dadfe3;
   &:hover {
-    background-color: rgba(9, 30, 66, 0.08);
-    box-shadow: 0 6px 8px rgba(102, 119, 136, 0.03),
-      0 1px 2px rgba(102, 119, 136, 0.3);
+    background-color: #b8c2cc;
   }
 `;
 
@@ -192,10 +199,13 @@ const PostEditOptionDelete = styled.div`
   justify-content: center;
   align-items: center;
   flex: 1;
-  background: rgba(245, 150, 126, 0.8);
-  color: #fff;
+  background-color: #ffecf0;
+  color: #c82124;
+  border: 1px solid #ffd0d6;
+
   &:hover {
-    background: rgba(245, 150, 126, 1);
+    background: #e3342f;
+    color: #fff;
   }
 `;
 

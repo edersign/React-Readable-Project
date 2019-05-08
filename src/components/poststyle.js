@@ -9,7 +9,7 @@ import { ReactComponent as Delete } from '../images/delete.svg';
 
 export const Article = styled.article`
   position: relative;
-  margin-bottom: 40px;
+  margin: 40px 0;
   background-color: #fff;
   display: flex;
   flex: 1 1 auto;
@@ -142,8 +142,8 @@ export const PostEditOption = styled(Link)`
   flex: 1;
   margin: 0 2px 0 0;
   background-color: #F1F5F8;
-    color: #183247;
-    border: 1px solid #dadfe3;
+  color: #183247;
+  border: 1px solid #dadfe3;
   &:hover {
     background-color: #B8C2CC;
   }

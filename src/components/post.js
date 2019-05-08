@@ -48,7 +48,7 @@ class Posts extends React.PureComponent {
   };
 
   render() {
-    const { post } = this.props;
+    const { post, commentCount } = this.props;
     return (
       <Wrap>
         <Article key={post.id}>
@@ -68,7 +68,7 @@ class Posts extends React.PureComponent {
                 <IconUser /> By: @{post.author}
               </Author>
               <Comments>
-                <IconMessage /> {post.commentCount}
+                <IconMessage /> {commentCount}
               </Comments>
               <PostEdit>
                 <PostEditOption to={`/edit/${post.id}`}>

@@ -93,7 +93,7 @@ export const deletePost = postId => ({
 });
 
 export const fetchDeletePost = postId => dispatch =>
-  api.deletePost(postId).then(post => dispatch(deletePost(post)));
+  api.deletePost(postId).then(() => dispatch(deletePost(postId)));
 
 export const addPost = post => ({
   type: ADD_POST,

@@ -6,10 +6,10 @@ import comments from './comments';
 import loading from './fetching';
 
 const rootReducer = combineReducers({
-  posts,
   categories,
-  sorting,
   comments,
+  posts,
+  sorting,
   loading,
 });
 

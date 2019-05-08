@@ -212,8 +212,6 @@ const PostEditOption = styled.a`
   box-sizing: border-box;
   cursor: pointer;
   display: flex;
-  background-color: rgba(9, 30, 66, 0.04);
-  color: rgb(0, 82, 204);
   border-radius: 3px;
   padding: 8px 20px;
   -webkit-text-decoration: none;
@@ -222,11 +220,11 @@ const PostEditOption = styled.a`
   justify-content: center;
   align-items: center;
   flex: 1;
-
+  background-color: #F1F5F8;
+  color: #183247;
+  border: 1px solid #dadfe3;
   &:hover {
-    background-color: rgba(9, 30, 66, 0.08);
-    box-shadow: 0 6px 8px rgba(102, 119, 136, 0.03),
-      0 1px 2px rgba(102, 119, 136, 0.3);
+    background-color: #B8C2CC;
   }
 `;
 
@@ -242,10 +240,13 @@ const PostEditOptionDelete = styled.div`
   justify-content: center;
   align-items: center;
   flex: 1;
-  background: rgba(245, 150, 126, 0.8);
-  color: #fff;
+  background-color: #ffecf0;
+  color: #c82124;
+  border: 1px solid #ffd0d6;
+
   &:hover {
-    background: rgba(245, 150, 126, 1);
+    background: #E3342F;
+    color: #fff;
   }
 `;
 

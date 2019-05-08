@@ -3,9 +3,10 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import CommentItem from './commentitem';
 import FormComment from './addcomment';
+import Wrap from './wrapper';
 
 const CommentstList = ({ comments, sort, onVoteUp, onVoteDown, postId }) => (
-  <CommentsWrap>
+  <Wrap>
     <CommentsSectionTitle>Comentários ({comments.length})</CommentsSectionTitle>
     {comments.length > 0 ? (
       comments
@@ -24,7 +25,7 @@ const CommentstList = ({ comments, sort, onVoteUp, onVoteDown, postId }) => (
             timestamp={timestamp}
             voteScore={voteScore}
             author={author}
-            onDeleteComment={() => this.onDeleteComment(id)}
+            onDeleteComment={() => this.onDeleteComment(id, parentId)}
             onVoteUp={() => this.onVoteUp(id)}
             onVoteDown={() => this.onVoteDown(id)}
           />
@@ -33,7 +34,7 @@ const CommentstList = ({ comments, sort, onVoteUp, onVoteDown, postId }) => (
       <PostTitle>No comments to display</PostTitle>
     )}
     <FormComment parentId={postId} />
-  </CommentsWrap>
+  </Wrap>
 );
 
 CommentstList.propTypes = {
@@ -42,13 +43,11 @@ CommentstList.propTypes = {
 
 export default CommentstList;
 
-const CommentsWrap = styled.section`
-  margin: auto;
-`;
-
 const CommentsSectionTitle = styled.h3`
   font: 400 18px/22px Helvetica, Arial, sans-serif;
   margin: 0 auto 20px;
+  display:block;
+  width: 100%;
 `;
 
 const PostTitle = styled.h3`
