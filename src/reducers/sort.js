@@ -1,6 +1,6 @@
 import {
   SELECT_SORT,
-} from '../actions/sort';
+} from '../actions/ActionTypes';
 
 const initialState = {
   sort: 'popular',

@@ -3,6 +3,7 @@ import { compose } from 'redux';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import styled from 'styled-components';
+import { bindActionCreators } from 'redux';
 
 import { fetchPosts, fetchPostsByCategories } from '../actions/post';
 import { selectedSort } from '../actions/sort';
@@ -11,42 +12,59 @@ import PostsList from '../components/postlist';
 import Categories from '../components/categories';
 import Wrap from '../components/wrapper';
 import { fetchCategories } from '../actions/category';
+import Loader from '../components/load';
 
 export class PostbyCategory extends React.PureComponent {
   componentDidMount() {
-    this.props.dispatch(selectedSort());
-    this.props.dispatch(fetchCategories());
-    this.props.dispatch(fetchPostsByCategories(this.props.match.params.category));
+    const { dispatch } = this.props;
+    dispatch(fetchPostsByCategories(this.props.match.params.category));
+    dispatch(selectedSort());
+    dispatch(fetchCategories());
   }
 
   handleChange = sort => {
-    this.props.dispatch(selectedSort(sort));
+    const { dispatch } = this.props;
+    dispatch(selectedSort(sort));
   };
 
-  onClickCat = (category) => {
-   this.props.dispatch(fetchPostsByCategories(category));
+  onClickCat = category => {
+    const { dispatch } = this.props;
+    dispatch(fetchPostsByCategories(category));
   };
 
-  onClickHome = (e) => {
+  onClickHome = () => {
     this.props.dispatch(fetchPosts());
-  }
+  };
   renderPostList = () => {
-    const { posts, sort } = this.props;
+    const { posts, sort, loading } = this.props;
 
-    if (posts.length === 0) {
-      return <Mainfeed><RetrunTitle>No post to load at #{this.props.match.params.category}</RetrunTitle></Mainfeed>;
+    if (loading === false && posts.length === 0) {
+      return <Loader />;
+    }
+    if (loading === true && posts.length === 0) {
+      return (
+        <Mainfeed>
+          <RetrunTitle>
+            No post to load at #{this.props.match.params.category}
+          </RetrunTitle>
+        </Mainfeed>
+      );
     }
 
     return <PostsList posts={posts} sort={sort} />;
-
   };
 
   render() {
     const { sort, categories } = this.props;
+    // console.log(loading);
     return (
       <Wrap>
         <FeedOptions>
-          <Categories categories={categories} onClickCat={this.onClickCat} onClickHome={this.onClickHome} />
+          <Categories
+            categories={categories}
+            onClickCat={this.onClickCat}
+            onClickHome={this.onClickHome}
+          />
           <SortWrap>
             <Sort value={sort} onChange={this.handleChange} />
           </SortWrap>
@@ -57,24 +75,37 @@ export class PostbyCategory extends React.PureComponent {
   }
 }
 
-const mapStateToProps = ({ posts, sorting, categories }) => {
+const mapStateToProps = ({ posts, sorting, categories, loading }) => {
   return {
     posts,
-    sort: sorting.sort || 'popular',
+    sort: sorting.sort,
     categories,
+    loading: loading.postsLoaded,
   };
 };
 
+function mapDispatchToProps(dispatch) {
+  return Object.assign(
+    { dispatch },
+    bindActionCreators(
+      { fetchPostsByCategories, selectedSort, fetchCategories },
+      dispatch,
+    ),
+  );
+}
 export default compose(
   withRouter,
-  connect(mapStateToProps),
+  connect(
+    mapStateToProps,
+    mapDispatchToProps,
+  ),
 )(PostbyCategory);
 
 const FeedOptions = styled.div`
   padding: 10px;
   width: 100%;
   display: flex;
-  margin: 10px 0; 
+  margin: 10px 0;
 `;
 
 const SortWrap = styled.div`

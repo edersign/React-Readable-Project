@@ -1,11 +1,13 @@
 import * as api from '../utils/api';
 
-export const RECEIVE_COMMENTS = 'RECEIVE_COMMENTS';
-export const RECEIVE_COMMENT = 'RECEIVE_COMMENT';
-export const EDIT_COMMENT = 'EDIT_COMMENT';
-export const DELETE_COMMENT = 'DELETE_COMMENT';
-export const VOTE_COMMENT = 'VOTE_COMMENT';
-export const ADD_COMMENT = 'ADD_COMMENT';
+import {
+  RECEIVE_COMMENTS,
+  RECEIVE_COMMENT,
+  EDIT_COMMENT,
+  DELETE_COMMENT,
+  VOTE_COMMENT,
+  ADD_COMMENT,
+} from './ActionTypes';
 
 export const getAllComments = comments => ({
   type: RECEIVE_COMMENTS,
@@ -60,4 +62,3 @@ export const deleteComment = commentId => ({
 
 export const fetchDeleteComment = commentId => dispatch =>
   api.deleteComment(commentId).then(() => dispatch(deleteComment(commentId)));
-

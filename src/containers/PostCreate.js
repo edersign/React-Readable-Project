@@ -1,54 +1,43 @@
 import React from 'react';
+import { compose } from 'redux';
 import styled from 'styled-components';
-import PropTypes from 'prop-types';
-// import { Link } from 'react-router-dom';
-import { formatDate } from '../utils/helpers';
-// import uuid from 'uuid';
-import Wrap from './wrapper';
-import Vote from './vote';
 import { connect } from 'react-redux';
+import { withRouter } from 'react-router-dom';
+import uuid from 'uuid';
+import { formatDate } from '../utils/helpers';
+import Wrap from '../components/wrapper';
 import { RIEInput, RIETextArea } from 'riek';
-import { fetchEditPost, fetchDeletePost, fetchPost } from '../actions/post';
+import { fetchAddPost } from '../actions/post';
+import { bindActionCreators } from 'redux';
 
 import { ReactComponent as Calendar } from '../images/calendar.svg';
 import { ReactComponent as User } from '../images/user.svg';
 import { ReactComponent as Edit } from '../images/edit.svg';
-import { ReactComponent as Delete } from '../images/delete.svg';
 
 const selectOptions = [
   { id: 1, text: 'React', value: 'react' },
   { id: 2, text: 'Redux', value: 'redux' },
   { id: 3, text: 'Udacity', value: 'udacity' },
 ];
-
-class PostsForm extends React.PureComponent {
+export class PostCrate extends React.PureComponent {
   constructor(props) {
     super(props);
 
     this.state = {
-      id: this.props.post.id,
-      category: this.props.post.category,
-      title: this.props.post.title,
-      author: this.props.post.author,
-      body: this.props.post.body,
-      voteScore: this.props.post.voteScore,
-      commentCount: this.props.post.commentCount,
-      timestamp: this.props.post.timestamp,
-      deleted: this.props.post.deleted,
+      id: uuid(),
+      category: 'react',
+      title: 'Click to add title',
+      author: 'Click to add your name',
+      body: 'Click to add your content',
+      voteScore: 0,
+      commentCount: 0,
+      timestamp: Date.now(),
+      deleted: false,
     };
   }
-  onVoteUp = (postId) => {
-    this.setState({ voteScore: this.props.post.voteScore + 1 });
-  };
-
-  onVoteDown = (postId) => {
-    this.setState({ voteScore: this.props.post.voteScore - 1 });
-  };
-  deletePost = () => {
-    this.setState({ deleted: true });
-  };
 
   onCategoryChange = (e, result) => {
+    console.log(e.target.value);
     this.setState({ category: e.target.value });
   };
 
@@ -62,20 +51,15 @@ class PostsForm extends React.PureComponent {
 
   onBodyChange = e => {
     this.setState({ body: e.textarea });
-  };
 
-  deletePost = postId => {
-    this.props.fetchDeletePost(postId);
-    this.props.fetchPost();
-
-    this.props.history.push('/');
   };
 
   handleSubmit = e => {
+    const { dispatch } = this.props;
     e.preventDefault();
     const post = {
       id: this.state.id,
-      timestamp: Date.now(),
+      timestamp: this.state.timestamp,
       title: this.state.title,
       body: this.state.body,
       author: this.state.author,
@@ -84,14 +68,14 @@ class PostsForm extends React.PureComponent {
       deleted: this.state.deleted,
       commentCount: this.state.commentCount,
     };
-    this.props.fetchEditPost(post.id, post);
+    dispatch(fetchAddPost(post));
   };
 
   render() {
     return (
       <Wrap>
         <Article key={this.state.id}>
-          <EditLabel> Click the text to edit and save to save the entire edit.</EditLabel>
+          <EditLabel> Click the text to edit and save to a new post.</EditLabel>
           <PostSummary>
             <PostTitle>
               <InputTitle
@@ -134,40 +118,32 @@ class PostsForm extends React.PureComponent {
               <PostEdit>
                 <PostEditOption onClick={this.handleSubmit}>
                   <IconEdit />
-                  Save Edit
+                  Save New Edit
                 </PostEditOption>
-                <PostEditOptionDelete onClick={() => this.deletePost(this.state.id)}>
-                  <IconDelete /> Delete
-                </PostEditOptionDelete>
               </PostEdit>
             </PostMeta>
           </PostSummary>
-          <Vote
-            voteScore={this.state.voteScore}
-            postId={this.state.id}
-            onVoteUp={this.onVoteUp}
-            onVoteDown={this.onVoteDown}
-          />
         </Article>
       </Wrap>
     );
   }
 }
 
-PostsForm.propTypes = {
-  post: PropTypes.object.isRequired,
-};
+function mapStateToProps({ posts }) {
+  return {
+    posts: posts,
+  };
+}
 
-const mapDispatchToProps = dispatch => ({
-  fetchEditPost: (postId, post) => dispatch(fetchEditPost(postId, post)),
-  fetchDeletePost: postId => dispatch(fetchDeletePost(postId)),
-  fetchPost: () => dispatch(fetchPost()),
-});
+function mapDispatchToProps(dispatch) {
+  return Object.assign({ dispatch }, bindActionCreators({ fetchAddPost }, dispatch));
+}
 
-export default connect(
-  () => ({}),
-  mapDispatchToProps,
-)(PostsForm);
+export default compose(
+  withRouter,
+  connect(mapStateToProps, mapDispatchToProps),
+)(PostCrate);
+
 
 const Article = styled.article`
   position: relative;
@@ -205,7 +181,7 @@ const PostSummary = styled.div`
   display: flex;
   justify-content: flex-start;
   align-items: flex-start;
-  width: 80%;
+  width: 100%;
   flex-direction: column;
   justify-content: flex-start;
   margin-right: auto;
@@ -284,31 +260,8 @@ const PostEditOption = styled.button`
       0 1px 2px rgba(102, 119, 136, 0.3);
   }
 `;
-const PostEditOptionDelete = styled.div`
-  box-sizing: border-box;
-  cursor: pointer;
-  display: flex;
-  border-radius: 3px;
-  padding: 8px 20px;
-  -webkit-text-decoration: none;
-  text-decoration: none;
-  transition: all 0.2s ease-out;
-  justify-content: center;
-  align-items: center;
-  flex: 1;
-  background: rgba(245, 150, 126, 0.8);
-  color: #fff;
-  &:hover {
-    background: rgba(245, 150, 126, 1);
-  }
-`;
+
 const IconEdit = styled(Edit)`
-  display: block;
-  width: 24px;
-  height: 24px;
-  margin-right: 10px;
-`;
-const IconDelete = styled(Delete)`
   display: block;
   width: 24px;
   height: 24px;

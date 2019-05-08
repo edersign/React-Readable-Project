@@ -3,6 +3,8 @@ import { compose } from 'redux';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import styled from 'styled-components';
+import { bindActionCreators } from 'redux';
+import { Link } from 'react-router-dom';
 
 import { fetchPosts, fetchPostsByCategories } from '../actions/post';
 import { selectedSort } from '../actions/sort';
@@ -12,56 +14,53 @@ import Categories from '../components/categories';
 import Wrap from '../components/wrapper';
 import Loader from '../components/load';
 import { fetchCategories } from '../actions/category';
+import { ReactComponent as Edit } from '../images/edit.svg';
 
-class Home extends React.PureComponent {
-  state = {
-    sort: 'popular',
-  };
+export class Home extends React.PureComponent {
 
   componentDidMount() {
-    // this.props.dispatch(fetchPosts());
-    // this.props.dispatch(selectedSort());
-    // this.props.dispatch(fetchCategories());
-    // fetchPosts(posts =>
-    //  this.setState({ posts: posts }));
-    // const { dispatch } = this.props;
-    // dispatch(fetchPosts())
-    // const { fetchPosts, fetchCategories } = this.props;
-    const { dispatch } = this.props;
-    // dispatch(fetchPosts());
-    this.props.fetchPosts();
+     const { dispatch } = this.props;
+
+     dispatch(fetchPosts());
+     dispatch(selectedSort());
+     dispatch(fetchCategories());
   }
 
   handleChange = sort => {
-    this.props.dispatch(selectedSort(sort));
+    const { dispatch } = this.props;
+    dispatch(selectedSort(sort));
   };
 
-  onClickCat = category => {
-    this.props.dispatch(fetchPostsByCategories(category));
+  onClickCat = (category) => {
+   const { dispatch } = this.props;
+   dispatch(fetchPostsByCategories(category));
   };
 
-  onClickHome = e => {
-    this.props.dispatch(fetchPosts());
-  };
+  onClickHome = () => {
+     const { dispatch } = this.props;
+     dispatch(fetchPosts());
+  }
+
   renderPostList = () => {
-    /* const { posts, sort } = this.props;
+    const { posts, sort, loading } = this.props;
 
-    if (posts.length === 0) {
+    if (loading === false && posts.length === 0) {
+
       return <Loader />;
     }
-    if (!posts.length === 0) {
+    if (loading  === true && posts.length === 0) {
       return <p>Oops, Failed to load list!</p>;
     }
 
-    return <PostsList posts={posts} sort={sort} />;*/
+    return <PostsList posts={posts} sort={sort} />;
   };
 
   render() {
-    const { sort, categories } = this.props;
+    const { categories, sort } = this.props;
 
     return (
-      {/* <Wrap>
-        <FeedOptions>
+      <Wrap>
+         <FeedOptions>
           <Categories
             categories={categories}
             onClickCat={this.onClickCat}
@@ -70,66 +69,55 @@ class Home extends React.PureComponent {
           <SortWrap>
             <Sort value={sort} onChange={this.handleChange} />
           </SortWrap>
+          <ButtonWrap>
+            <PostEditOption to={'/new'}>
+              <IconEdit />
+                  New post
+            </PostEditOption>
+          </ButtonWrap>
         </FeedOptions>
         <Mainfeed>{this.renderPostList()}</Mainfeed>
-      </Wrap>*/}
+      </Wrap>
     );
   }
 }
 
-/* const mapStateToProps = ({ posts, sorting, categories }) => {
+const mapStateToProps = ({ posts, sorting, categories, loading }) => {
   return {
     posts,
     sort: sorting.sort,
     categories,
-  };
-};*/
-
-const mapStateToProps = ({ posts, sorting }) => {
-  console.log(posts);
-  return {
-    posts,
-    sort: sorting.sort,
+    loading: loading.postsLoaded,
   };
 };
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    fetchPosts: () => dispatch(fetchPosts()),
-    fetchCategories: () => dispatch(fetchCategories()),
-  };
-};
-
-// export default connect(mapStateToProps, mapDispatchToProps)(Posts)
-/* const mapDispatchToProps = dispatch => ({
-  fetchPosts: () => dispatch(fetchPosts()),
-  selectedSort: () => dispatch(selectedSort()),
-  fetchCategories: () => dispatch(fetchCategories()),
-});
-
+function mapDispatchToProps(dispatch) {
+  return Object.assign({ dispatch }, bindActionCreators({
+    fetchPosts, selectedSort, fetchCategories, fetchPostsByCategories,
+  }, dispatch));
+}
 
 export default compose(
   withRouter,
-  connect(mapStateToProps, mapDispatchToProps),
-)(Home);*/
-// function mapStateToProps({posts, categories, filterByCategory, loadingData}) {
-//  return {posts, categories, filterByCategory, loadingData}/
-// }
-export default connect(mapStateToProps, mapDispatchToProps)(Home);
-// export default compose(
-//  withRouter,
-//  connect(mapStateToProps, {fetchPosts, fetchCategories}),
-// )(Home);
-
+  connect(
+    mapStateToProps, mapDispatchToProps
+  ),
+)(Home);
 
 const FeedOptions = styled.div`
   padding: 10px;
   width: 100%;
   display: flex;
-  margin: 10px 0; 
+  margin: 10px 0;
 `;
 
 const SortWrap = styled.div`
+  flex-direction: column;
+  justify-content: flex-start;
+  margin: auto;
+`;
+
+const ButtonWrap = styled.div`
   flex-direction: column;
   justify-content: flex-end;
   margin: auto 0 auto auto;
@@ -140,4 +128,30 @@ const Mainfeed = styled.div`
   position: relative;
   min-height: 350px;
   width: 100%;
+`;
+const PostEditOption = styled(Link)`
+  box-sizing: border-box;
+  cursor: pointer;
+  display: flex;
+  border-radius: 3px;
+  padding: 8px 20px;
+  -webkit-text-decoration: none;
+  text-decoration: none;
+  transition: all 0.2s ease-out;
+  justify-content: center;
+  align-items: center;
+  flex: 1;
+  margin: 0 2px 0 0;
+  background-color: #F1F5F8;
+    color: #183247;
+    border: 2px solid #dadfe3;
+  &:hover {
+    background-color: #B8C2CC;
+  }
+`;
+const IconEdit = styled(Edit)`
+  display: block;
+  width: 24px;
+  height: 24px;
+  margin-right: 10px;
 `;

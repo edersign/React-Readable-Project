@@ -6,15 +6,15 @@ import { withRouter } from 'react-router-dom';
 
 const Categories = ({ categories, onClickCat, onClickHome }) => (
   <Tabs>
-    {Object.keys(categories).map(key => {
+    {categories.map((category, index) => {
       return (
         <TabslistItenLink
-          key={categories[key].name}
-          to={`/${categories[key].path}/`}
-          onClick={() => onClickCat(categories[key].path)}
+          key={index}
+          to={`/${category.name}/`}
+          onClick={() => onClickCat(category.name)}
           activeClassName="active"
         >
-          #{categories[key].name}
+          #{category.name}
         </TabslistItenLink>
       );
     })}
@@ -22,7 +22,7 @@ const Categories = ({ categories, onClickCat, onClickHome }) => (
 );
 
 Categories.propTypes = {
-  categories: PropTypes.object.isRequired,
+  // categories: PropTypes.array.isRequired,
   onClickCat: PropTypes.func.isRequired,
 };
 

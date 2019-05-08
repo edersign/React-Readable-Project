@@ -6,6 +6,7 @@ import uuid from 'uuid';
 import { RIEInput, RIETextArea } from 'riek';
 import Wrap from './wrapper';
 import { fetchAddComment } from '../actions/comment';
+import { fetchPost } from '../actions/post';
 
 import { ReactComponent as User } from '../images/user.svg';
 import { ReactComponent as Edit } from '../images/edit.svg';
@@ -39,8 +40,9 @@ constructor(props) {
       parentId: this.props.parentId,
       voteScore: 0,
     };
-    console.log(newcomment);
+    // console.log(newcomment);
     this.props.fetchAddComment(newcomment);
+    this.props.fetchPost(this.state.parentId);
   };
   render() {
     return (
@@ -83,6 +85,7 @@ AddCommentForm.propTypes = {
 
 const mapDispatchToProps = dispatch => ({
   fetchAddComment: newcomment => dispatch(fetchAddComment(newcomment)),
+  fetchPost: (parentId) => dispatch(fetchPost(parentId)),
 });
 
 export default connect(

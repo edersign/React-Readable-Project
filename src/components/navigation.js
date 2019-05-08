@@ -22,9 +22,13 @@ const Navigation = () => (
 export default withRouter(Navigation);
 
 const Header = styled.header`
-  background: rgba(0, 0, 0, 0.05);
   align-items: stretch;
   display: flex;
+  background-color: #f5f7f9;
+  height: 56px;
+  border-bottom: 1px #cfd7df solid;
+  padding: 0 15px;
+  box-shadow: 0 2px 4px 0 rgba(24,50,71,.08)
 `;
 
 const Container = styled(Wrap)`

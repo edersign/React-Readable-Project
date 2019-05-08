@@ -11,8 +11,7 @@ class CommentEdit extends React.PureComponent {
 
    const { comments } = this.props;
 
-
-    const comment = comments.filter(item => {
+   const comment = comments.filter(item => {
       if (item.id === this.props.match.params.id) {
         return item;
       }

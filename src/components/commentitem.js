@@ -6,6 +6,7 @@ import { formatDate } from '../utils/helpers';
 import Wrap from './wrapper';
 import { connect } from 'react-redux';
 import { fetchVoteComment, fetchDeleteComment } from '../actions/comment';
+import { fetchPost } from '../actions/post';
 import VoteComments from './votecomments';
 
 import { ReactComponent as Calendar } from '../images/calendar.svg';
@@ -21,8 +22,9 @@ class CommentItem extends React.PureComponent {
   onVoteDown = id => {
     this.props.fetchVoteComment(id, 'downVote');
   };
-  onDeleteComment = id => {
+  onDeleteComment = (id, parentId) => {
     this.props.fetchDeleteComment(id);
+    this.props.fetchPost(parentId);
   };
 
   render() {
@@ -44,7 +46,7 @@ class CommentItem extends React.PureComponent {
                   <IconEdit />
                   Edit
                 </PostEditOption>
-                <PostEditOptionDelete onClick={() => this.onDeleteComment(id)}>
+                <PostEditOptionDelete onClick={() => this.onDeleteComment(id, parentId)}>
                   <IconDelete />
                   Delete
                 </PostEditOptionDelete>
@@ -76,6 +78,7 @@ CommentItem.propTypes = {
 const mapDispatchToProps = dispatch => ({
   fetchVoteComment: (commentId, option) => dispatch(fetchVoteComment(commentId, option)),
   fetchDeleteComment: commentId => dispatch(fetchDeleteComment(commentId)),
+  fetchPost: (parentId) => dispatch(fetchPost(parentId)),
 });
 
 export default connect(

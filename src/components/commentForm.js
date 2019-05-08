@@ -40,9 +40,9 @@ class CommentForm extends React.Component {
     this.setState({ voteScore: this.props.comment.voteScore - 1 });
   };
 
-  deletePost = () => {
-    this.props.fetchDeleteComment(this.state.id);
-    this.props.fetchPost(this.state.parentId);
+  onDeleteComment = (id, parentId) => {
+    this.props.fetchDeleteComment(id);
+    this.props.fetchPost(parentId);
 
     this.props.history.push('/');
   };
@@ -66,6 +66,7 @@ class CommentForm extends React.Component {
       parentDeleted: this.state.parentDeleted,
     };
     this.props.fetchEditComment(this.state.id, comment);
+    this.props.fetchPost(this.state.parentId);
   };
 
   render() {
@@ -97,7 +98,7 @@ class CommentForm extends React.Component {
                   <IconEdit />
                   Edit
                 </PostEditOption>
-                <PostEditOptionDelete onClick={this.deletePost}>
+                <PostEditOptionDelete onClick={() => this.onDeleteComment(this.state.id, this.state.parentId)}>
                   <IconDelete />
                   Delete
                 </PostEditOptionDelete>
@@ -124,7 +125,7 @@ const mapDispatchToProps = dispatch => ({
   fetchEditComment: (commentId, comment) =>
     dispatch(fetchEditComment(commentId, comment)),
   fetchDeleteComment: commentId => dispatch(fetchDeleteComment(commentId)),
-  fetchPost: postId => dispatch(fetchPost(postId)),
+  fetchPost: (parentId) => dispatch(fetchPost(parentId)),
 });
 
 export default compose(

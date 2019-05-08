@@ -5,7 +5,7 @@ import {
   DELETE_COMMENT,
   VOTE_COMMENT,
   ADD_COMMENT,
-} from '../actions/comment';
+} from '../actions/ActionTypes';
 
 const initialCommentsState = [];
 

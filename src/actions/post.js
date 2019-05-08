@@ -1,49 +1,42 @@
 import * as api from '../utils/api';
 
-export const INVALIDATE_POSTS = 'INVALIDATE_POSTS';
-export const REQUEST_POSTS = 'REQUEST_POSTS';
-export const RECEIVE_POSTS = 'RECEIVE_POSTS';
-export const RECEIVE_POST = 'RECEIVE_POST';
-export const EDIT_POST = 'EDIT_POSTS';
-export const DELETE_POST = 'DELETE_POSTS';
-export const VOTE_POST = 'VOTE_POSTS';
-export const GET_POSTS_BY_CATEGORIES = 'GET_POSTS_BY_CATEGORIES';
+import {
+  INVALIDATE_POSTS,
+  LOAD_POSTS,
+  RECEIVE_POSTS,
+  RECEIVE_POST,
+  EDIT_POST,
+  DELETE_POST,
+  VOTE_POST,
+  ADD_POST,
+  GET_POSTS_BY_CATEGORIES,
+} from './ActionTypes';
 
-export const postsByCategories = post => ({
-  type: GET_POSTS_BY_CATEGORIES,
-  post,
-});
-
-export const fetchPostsByCategories = category => dispatch =>
-  api
-    .getPostsByCategories(category)
-    .then(posts => dispatch(postsByCategories(posts)));
-
-export const requestAllPosts = isFetchingPosts => ({
-  type: REQUEST_POSTS,
-  isFetchingPosts: true,
-});
-
+export function requestPosts() {
+  return {
+    type: LOAD_POSTS,
+  };
+}
 export const getAllPosts = posts => ({
   type: RECEIVE_POSTS,
-  isFetchingPosts: false,
   posts: posts,
 });
-export const invalidateposts = error => ({
-  type: INVALIDATE_POSTS,
-  error,
-});
+
+export function invalidateposts() {
+  return {
+    type: INVALIDATE_POSTS,
+  };
+}
 
 export const fetchPosts = () => dispatch => {
-  dispatch(requestAllPosts());
+  dispatch(requestPosts());
   api
     .getAllPosts()
     .then(posts => dispatch(getAllPosts(posts)))
     .catch(err => {
       console.error(err);
-      dispatch(invalidateposts(err));
+      dispatch(() => invalidateposts());
     });
-  // .then(error => dispatch(invalidateposts(error)));
 };
 
 export const getPost = post => ({
@@ -51,8 +44,32 @@ export const getPost = post => ({
   post,
 });
 
-export const fetchPost = postId => dispatch =>
-  api.getPost(postId).then(post => dispatch(getPost(post)));
+export const fetchPost = postId => dispatch => {
+  dispatch(requestPosts());
+  api
+    .getPost(postId)
+    .then(post => dispatch(getPost(post)))
+    .catch(err => {
+      console.error(err);
+      dispatch(() => invalidateposts());
+    });
+};
+
+export const postsByCategories = posts => ({
+  type: GET_POSTS_BY_CATEGORIES,
+  posts,
+});
+
+export const fetchPostsByCategories = category => dispatch => {
+  dispatch(requestPosts());
+  api
+    .getPostsByCategories(category)
+    .then(posts => dispatch(postsByCategories(posts)))
+    .catch(err => {
+      console.error(err);
+      dispatch(() => invalidateposts(err));
+    });
+};
 
 export const votePost = post => ({
   type: VOTE_POST,
@@ -76,4 +93,12 @@ export const deletePost = postId => ({
 });
 
 export const fetchDeletePost = postId => dispatch =>
-  api.deletePost(postId).then(() => dispatch(deletePost(postId)));
+  api.deletePost(postId).then(post => dispatch(deletePost(post)));
+
+export const addPost = post => ({
+  type: ADD_POST,
+  post,
+});
+
+export const fetchAddPost = (post) => dispatch =>
+  api.addPost(post).then(post => dispatch(addPost(post)));

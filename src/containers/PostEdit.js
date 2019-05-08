@@ -8,7 +8,7 @@ import Loader from '../components/load';
 
 export class PostEdit extends React.PureComponent {
   componentDidMount() {
-    this.props.dispatch(fetchPosts());
+      this.props.dispatch(fetchPosts());
   }
 
   renderPostForm = () => {

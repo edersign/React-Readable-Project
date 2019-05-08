@@ -1,4 +1,4 @@
-export const SELECT_SORT = 'SELECT_SORT';
+import { SELECT_SORT } from './ActionTypes';
 
 export const selectedSort = (sort) => ({
   type: SELECT_SORT,

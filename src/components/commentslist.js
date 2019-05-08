@@ -12,7 +12,7 @@ const CommentstList = ({ comments, sort, onVoteUp, onVoteDown, postId }) => (
         .sort((a, b) => {
           switch (sort) {
             default:
-              return b.voteScore - a.voteScore;
+              return b.timestamp - a.timestamp;
           }
         })
         .map(({ id, body, parentId, voteScore, author, timestamp }) => (
@@ -43,17 +43,15 @@ CommentstList.propTypes = {
 export default CommentstList;
 
 const CommentsWrap = styled.section`
-  width: 80%;
   margin: auto;
 `;
 
 const CommentsSectionTitle = styled.h3`
-  font: 400 24px/28px Helvetica, Arial, sans-serif;
+  font: 400 18px/22px Helvetica, Arial, sans-serif;
   margin: 0 auto 20px;
-  width: 94%;
 `;
 
 const PostTitle = styled.h3`
-  font: 400 24px/28px Helvetica, Arial, sans-serif;
+  font: 400 12px/28px Helvetica, Arial, sans-serif;
   margin: 20px;
 `;
