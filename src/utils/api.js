@@ -1,12 +1,14 @@
+import fetch from 'cross-fetch';
 const api = 'http://localhost:3001';
 
 // Generate a unique token for storing data of Readable on the backend server
 export let token = localStorage.token;
 
-if (!token)
-  {token = localStorage.token = Math.random()
+if (!token) {
+  token = localStorage.token = Math.random()
     .toString(36)
-    .substr(-8);}
+    .substr(-8);
+}
 
 const headers = {
   Accept: 'application/json',
@@ -21,7 +23,7 @@ export const getAllCategories = () =>
 
 export const getPostsByCategories = category =>
   fetch(`${api}/${category}/posts`, { headers }).then(response =>
-    response.json()
+    response.json(),
   );
 
 export const getAllPosts = () =>
@@ -36,7 +38,7 @@ export const addPost = post =>
 
 export const getPost = postId =>
   fetch(`${api}/posts/${postId}`, { headers }).then(response =>
-    response.json()
+    response.json(),
   );
 
 export const votePost = (postId, option) =>
@@ -61,7 +63,7 @@ export const deletePost = postId =>
 
 export const getAllComments = postId =>
   fetch(`${api}/posts/${postId}/comments`, { headers }).then(response =>
-    response.json()
+    response.json(),
   );
 
 export const addComment = comment =>
@@ -73,7 +75,7 @@ export const addComment = comment =>
 
 export const getComment = commentId =>
   fetch(`${api}/comments/${commentId}`, { headers }).then(response =>
-    response.json()
+    response.json(),
   );
 
 export const voteComment = (commentId, option) =>

@@ -10,8 +10,8 @@ const Categories = ({ categories, onClickCat, onClickHome }) => (
       return (
         <TabslistItenLink
           key={categories[key].name}
-          to={`/${categories[key].name}/`}
-          onClick={() => onClickCat(categories[key].name)}
+          to={`/${categories[key].path}/`}
+          onClick={() => onClickCat(categories[key].path)}
           activeClassName="active"
         >
           #{categories[key].name}

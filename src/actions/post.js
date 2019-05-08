@@ -19,19 +19,32 @@ export const fetchPostsByCategories = category => dispatch =>
     .getPostsByCategories(category)
     .then(posts => dispatch(postsByCategories(posts)));
 
-export const requestAllPosts = posts => ({
+export const requestAllPosts = isFetchingPosts => ({
   type: REQUEST_POSTS,
-  posts,
+  isFetchingPosts: true,
 });
 
 export const getAllPosts = posts => ({
   type: RECEIVE_POSTS,
-  success: true,
+  isFetchingPosts: false,
   posts: posts,
 });
+export const invalidateposts = error => ({
+  type: INVALIDATE_POSTS,
+  error,
+});
 
-export const fetchPosts = () => dispatch =>
-  api.getAllPosts().then(posts => dispatch(getAllPosts(posts)));
+export const fetchPosts = () => dispatch => {
+  dispatch(requestAllPosts());
+  api
+    .getAllPosts()
+    .then(posts => dispatch(getAllPosts(posts)))
+    .catch(err => {
+      console.error(err);
+      dispatch(invalidateposts(err));
+    });
+  // .then(error => dispatch(invalidateposts(error)));
+};
 
 export const getPost = post => ({
   type: RECEIVE_POST,
